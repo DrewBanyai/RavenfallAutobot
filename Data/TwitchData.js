@@ -21,6 +21,6 @@ let getTwitchOptionsInURL = () => {
 
 const twitchURLOptions = getTwitchOptionsInURL();
 
-if (twitchURLOptions && twitchURLOptions.token) { token = twitchURLOptions.token; }
+if (twitchURLOptions && twitchURLOptions.token) { token = "oauth:" + twitchURLOptions.token; }
 if (twitchURLOptions && twitchURLOptions.username) { username = twitchURLOptions.username; }
 if (twitchURLOptions && twitchURLOptions.channel) { channel = twitchURLOptions.channel; }
