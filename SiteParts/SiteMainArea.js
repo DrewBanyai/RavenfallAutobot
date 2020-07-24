@@ -54,6 +54,7 @@ class SiteMainArea {
                     Object.assign(lastCommand, lastChatMessage);
                     TwitchController.SendChatMessage(channel, "!join");
                     if (lastCommand.m) { TwitchController.SendChatMessage(lastCommand.c, lastCommand.m); }
+                    TwitchController.SendChatMessage(channel, "!train all");
                     return true;
                 }
             }
