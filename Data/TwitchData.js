@@ -2,6 +2,7 @@
 let token = "";
 let username = "";
 let channel = "";
+let myUsername = "";
 
 let getTwitchOptionsInURL = () => {
     let queryString = window.location.search;

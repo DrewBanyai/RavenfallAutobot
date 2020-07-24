@@ -15,8 +15,6 @@ class TwitchController {
         username = twitchBotUsername;
         token = twitchToken;
 
-        console.log(channel, username, token);
-
         // Instantiate the TwitchJS objects
         const { chat, api } = new TwitchJs({ token, username });
         twitchChat = chat;
@@ -28,9 +26,10 @@ class TwitchController {
         // Listen for all events.
         chat.on(TwitchJs.Chat.Events.ALL, this.handleTwitchMessage);
         
-        // Connect ...
+        // Connect and save off our personal username
         let connectResult = await chat.connect();
         if (!connectResult) { return false; }
+        myUsername = twitchChat._userState.username;
 
         TwitchController.AddMessageCallback("MSG_RATELIMIT", () => {
             //  try to resend the same message again
@@ -76,7 +75,7 @@ class TwitchController {
             case "HOST_ON":                     if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST ON: " + message.message + " on " + message.username);                break;
             case "HOST_OFF":                    if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST OFF: " + message.message + " on " + message.username);               break;
             case "HOST_TARGET_WENT_OFFLINE":    if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST TARGET OFFLINE: " + message.message + " on " + message.username);    break;
-            default:                            if (SHOW_UNHANDLED_MESSAGES) console.log(message);                                                                                               break;
+            default:                            if (SHOW_UNHANDLED_MESSAGES) console.log("UNHANDLED:", message);                                                                                               break;
         }
     };
 

@@ -32,15 +32,28 @@ class SiteMainArea {
     setTwitchChatCallbacks() {
         TwitchController.AddMessageCallback("PRIVMSG", (message) => {
             if (message.username === username.toLowerCase()) {
+                let messageLower = message.message.toLowerCase();
+
                 //  Auto-reply on raids
-                if (this.autoOptions.autoRaid && message.message.toLowerCase().includes("help fight him by typing !raid")) {
+                if (this.autoOptions.autoRaid && messageLower.includes("help fight him by typing !raid")) {
                     TwitchController.SendChatMessage(channel, "!raid");
                     return true;
                 }
 
                 //  Auto-reply on dungeons
-                if (this.autoOptions.autoDungeon && message.message.toLowerCase().includes("type !dungeon to join.")) {
+                if (this.autoOptions.autoDungeon && messageLower.includes("type !dungeon to join.")) {
                     TwitchController.SendChatMessage(channel, "!dungeon");
+                    return true;
+                }
+
+                //  Auto re-join if we aren't connected (also try to re-fire our last message before)
+                let raidUnjoined =  (messageLower === (myUsername.toLowerCase() + ", you have to !join the game before using this command."));
+                let dungeonUnjoined =  (messageLower === (myUsername.toLowerCase() + ", you are not currently playing, use the !join to start playing."));
+                if (raidUnjoined || dungeonUnjoined) {
+                    let lastCommand = {};
+                    Object.assign(lastCommand, lastChatMessage);
+                    TwitchController.SendChatMessage(channel, "!join");
+                    if (lastCommand.m) { TwitchController.SendChatMessage(lastCommand.c, lastCommand.m); }
                     return true;
                 }
             }
