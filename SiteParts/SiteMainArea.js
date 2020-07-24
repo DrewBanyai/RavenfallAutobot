@@ -66,6 +66,18 @@ class SiteMainArea {
                     TwitchController.SendChatMessage(channel, "!train all");
                     return true;
                 }
+
+                //  Join raid when told to
+                if (messageLower.includes("autobots, raid time")) {
+                    TwitchController.SendChatMessage(channel, "!raid");
+                    return true;
+                }
+
+                //  Join dungeon when told to
+                if (messageLower.includes("autobots, dungeon time")) {
+                    TwitchController.SendChatMessage(channel, "!dungeon");
+                    return true;
+                }
             }
 
             //  Add a new entry to our on-screen chat
