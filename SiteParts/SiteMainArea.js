@@ -31,8 +31,9 @@ class SiteMainArea {
 
     setTwitchChatCallbacks() {
         TwitchController.AddMessageCallback("PRIVMSG", (message) => {
+            let messageLower = message.message.toLowerCase();
+
             if (message.username === username.toLowerCase()) {
-                let messageLower = message.message.toLowerCase();
 
                 //  Auto-reply on raids
                 if (this.autoOptions.autoRaid && messageLower.includes("help fight him by typing !raid")) {
@@ -55,6 +56,13 @@ class SiteMainArea {
                     TwitchController.SendChatMessage(channel, "!join");
                     TwitchController.SendChatMessage(channel, "!train all");
                     if (lastCommand.m) { TwitchController.SendChatMessage(lastCommand.c, lastCommand.m); }
+                    return true;
+                }
+            }
+            else if (message.username === channel.toLowerCase()) {
+                //  Auto-join when told to
+                if (messageLower.includes("autobots, roll out")) {
+                    TwitchController.SendChatMessage(channel, "!join");
                     return true;
                 }
             }
