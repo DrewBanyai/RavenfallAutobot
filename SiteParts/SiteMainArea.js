@@ -33,7 +33,37 @@ class SiteMainArea {
         TwitchController.AddMessageCallback("PRIVMSG", (message) => {
             let messageLower = message.message.toLowerCase();
 
-            if (message.username === username.toLowerCase()) {
+            let messageFlags = {
+                relevantToMe:       (messageLower.includes(myUsername.toLowerCase()) ||  (message.username === myUsername.toLowerCase())),
+                sentFromRavenbot:   (message.username === username.toLowerCase()),
+                sentFromStreamer:   (message.username === channel.toLowerCase()),
+                streamElements:     (message.username === "streamelements"),
+
+                vendorSale:         (messageLower.includes("you sold ") &&  messageLower.includes("to the vendor for")),
+                raidJoinedMsg:      (messageLower.includes("you have joined the raid. good luck!")),
+                disembarkedFerry:   (messageLower.includes(", you have disembarked the ferry.")),
+                raidTryOnFerry:     (messageLower.includes("you cannot join the raid while on the ferry.")),
+                youHaveToJoin:      (messageLower.includes("you have to !join the game before using this command.")),
+                dungeonTimer:       (messageLower.includes(" until dungeon starts.")),
+                youNeedToCraft:     (messageLower.includes(", you need") && messageLower.includes(" to craft ")),
+                alreadyJoined:      (messageLower.includes("join failed. reason: you're already playing!")),
+                playerGotItem:      (messageLower.includes("you found a ")),
+                ravenbotStats:      (messageLower.includes(", combat level ") && messageLower.includes(", attack ") && messageLower.includes(", farming ") && messageLower.includes(", -- total ")),
+                islandCheck:        (messageLower.includes("you're on the island called")),
+                welcomeMessage:     (messageLower.includes(", welcome to the game!")),
+                cannotUseShow:      (messageLower.includes("you do not have permission to set the currently observed player.")),
+                foundAndEquipped:   (messageLower.includes(", you found and equipped")),
+
+                playerTraining:     (messageLower.includes("!train ")),
+                playerCrafting:     (messageLower.includes("!craft ")),
+                playerRaid:         (messageLower.includes("!raid")),
+                playerDungeon:      (messageLower.includes("!dungeon")),
+                playerStats:        (messageLower.includes("!stats")),
+
+                isNowLiveMessage:   (messageLower.includes("is now live! streaming ")),
+            };
+
+            if (messageFlags.sentFromRavenbot) {
                 //  Auto-reply on raids
                 if (this.autoOptions.autoRaid && messageLower.includes("help fight him by typing !raid")) {
                     TwitchController.SendChatMessage(channel, "!raid");
@@ -58,7 +88,7 @@ class SiteMainArea {
                     return true;
                 }
             }
-            else if (message.username === channel.toLowerCase()) {
+            else if (messageFlags.sentFromStreamer) {
                 //  Auto-join when told to
                 if (messageLower.includes("autobots, roll out")) {
                     TwitchController.SendChatMessage(channel, "!join");
@@ -79,11 +109,38 @@ class SiteMainArea {
                 }
             }
 
-            //  Add a new entry to our on-screen chat
-            if (this.elements.twitchChatContainer.content.children.length >= 20) {
-                this.elements.twitchChatContainer.content.removeChild(this.elements.twitchChatContainer.content.children[0]);
+            //  Filter out certain chat messages that get this far and are not relevant to me
+            if (!messageFlags.relevantToMe)
+            {
+                if (messageFlags.sentFromRavenbot) {
+                    if (messageFlags.vendorSale) { return true; }
+                    if (messageFlags.raidJoinedMsg) { return true; }
+                    if (messageFlags.disembarkedFerry) { return true; }
+                    if (messageFlags.raidTryOnFerry) { return true; }
+                    if (messageFlags.youHaveToJoin) { return true; }
+                    if (messageFlags.youNeedToCraft) { return true; }
+                    if (messageFlags.alreadyJoined) { return true; }
+                    if (messageFlags.playerGotItem) { return true; }
+                    if (messageFlags.ravenbotStats) { return true; }
+                    if (messageFlags.islandCheck) { return true; }
+                    if (messageFlags.welcomeMessage) { return true; }
+                    if (messageFlags.cannotUseShow) { return true; }
+                    if (messageFlags.dungeonTimer) { return true; }
+                    if (messageFlags.foundAndEquipped) { return true; }
+                }
+                else if (!messageFlags.sentFromStreamer) {
+                    if (messageFlags.playerTraining) { return true; }
+                    if (messageFlags.playerCrafting) { return true; }
+                    if (messageFlags.playerRaid) { return true; }
+                    if (messageFlags.playerDungeon) { return true; }
+                    if (messageFlags.playerStats) { return true; }
+
+                    if (messageFlags.isNowLiveMessage && messageFlags.streamElements) { return true; }
+                }
             }
-            this.elements.twitchChatContainer.createChatLine(message.username, message.message, messageLower.includes(myUsername.toLowerCase()));
+
+            //  Add a new entry to our on-screen chat
+            this.elements.twitchChatContainer.addChatLine(message.username, message.message, messageFlags.relevantToMe);
             return true;
         });
     }

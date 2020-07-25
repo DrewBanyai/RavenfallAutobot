@@ -15,7 +15,7 @@ class SiteHeader {
 
         let siteNameBox = new Container({
             id: "SiteNameBox",
-            style: { height: "100%", display: "inline-flex", float: "left", cursor: "pointer", },
+            style: { height: "100%", display: "inline-flex", float: "left", },
         });
         this.centeredHeader.appendChild(siteNameBox.content);
         //  TODO: Make this a link to the main page?
@@ -49,8 +49,13 @@ class SiteHeader {
     }
 
     async loadSiteNameBox(container) {
-        let siteTitleLabel = new Label({ id: "SiteNameLabel", attributes: { value: "Ravenfall Auto-Raid reply bot", }, style: styleConfig.SiteTitleLabel, });
+        let siteTitleLabel = new Label({ id: "SiteNameLabel", attributes: { value: "Ravenfall Auto-Raid reply bot (by DrewTheBear)", }, style: styleConfig.SiteTitleLabel, });
         container.appendChild(siteTitleLabel.content);
+
+        let drewTheBearIcon = new Image({ id: "DrewTheBearIcon", style: { width: "36px", height: "36px", margin: "5px", borderRadius: "50%", border: "3px solid rgb(200, 200, 200)", cursor: "pointer", }});
+        drewTheBearIcon.setValue("./Images/DrewTheBear_Icon.png");
+        drewTheBearIcon.content.onclick = () => { window.open("http://twitch.tv/DrewTheBear"); }
+        container.appendChild(drewTheBearIcon.content);
     }
 
     async loadSiteLoginLogoutBox(container) {
