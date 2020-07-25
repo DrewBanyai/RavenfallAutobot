@@ -38,9 +38,11 @@ class SiteMainArea {
                 sentFromRavenbot:   (message.username === username.toLowerCase()),
                 sentFromStreamer:   (message.username === channel.toLowerCase()),
                 streamElements:     (message.username === "streamelements"),
+                nightbot:           (message.username === "nightbot"),
 
                 vendorSale:         (messageLower.includes("you sold ") &&  messageLower.includes("to the vendor for")),
                 raidJoinedMsg:      (messageLower.includes("you have joined the raid. good luck!")),
+                dungeonJoinedMsg:   (messageLower.includes("you have joined the dunegon. good luck!")),
                 disembarkedFerry:   (messageLower.includes(", you have disembarked the ferry.")),
                 raidTryOnFerry:     (messageLower.includes("you cannot join the raid while on the ferry.")),
                 youHaveToJoin:      (messageLower.includes("you have to !join the game before using this command.")),
@@ -53,6 +55,8 @@ class SiteMainArea {
                 welcomeMessage:     (messageLower.includes(", welcome to the game!")),
                 cannotUseShow:      (messageLower.includes("you do not have permission to set the currently observed player.")),
                 foundAndEquipped:   (messageLower.includes(", you found and equipped")),
+                singleStatReport:   (messageLower.includes(", ") && messageLower.includes(" (") && messageLower.includes("%)")),
+                resourcesReport:    (messageLower.includes(", wood ") && messageLower.includes(", ore ") && messageLower.includes(", fish ") && messageLower.includes(", wheat ") && messageLower.includes(", coin ")),
 
                 playerJoining:      (messageLower.includes("!join")),
                 playerLeaving:      (messageLower.includes("!leave")),
@@ -61,8 +65,11 @@ class SiteMainArea {
                 playerRaid:         (messageLower.includes("!raid")),
                 playerDungeon:      (messageLower.includes("!dungeon")),
                 playerStats:        (messageLower.includes("!stats")),
+                playerResource:     (messageLower.includes("!res")),
 
                 isNowLiveMessage:   (messageLower.includes("is now live! streaming ")),
+
+                nbSpamWarning:      (messageLower.includes("[blacklisted spam] [warning]")),
             };
 
             if (messageFlags.sentFromRavenbot) {
@@ -81,7 +88,7 @@ class SiteMainArea {
                 //  Auto re-join if we aren't connected (also try to re-fire our last message before)
                 let raidUnjoined =  (messageLower === (myUsername.toLowerCase() + ", you have to !join the game before using this command."));
                 let dungeonUnjoined =  (messageLower === (myUsername.toLowerCase() + ", you are not currently playing, use the !join to start playing."));
-                if (raidUnjoined || dungeonUnjoined) {
+                if (relevantToMe && (raidUnjoined || dungeonUnjoined)) {
                     let lastCommand = {};
                     Object.assign(lastCommand, lastChatMessage);
                     TwitchController.SendChatMessage(channel, "!join");
@@ -117,6 +124,7 @@ class SiteMainArea {
                 if (messageFlags.sentFromRavenbot) {
                     if (messageFlags.vendorSale) { return true; }
                     if (messageFlags.raidJoinedMsg) { return true; }
+                    if (messageFlags.dungeonJoinedMsg) { return true; }
                     if (messageFlags.disembarkedFerry) { return true; }
                     if (messageFlags.raidTryOnFerry) { return true; }
                     if (messageFlags.youHaveToJoin) { return true; }
@@ -129,6 +137,8 @@ class SiteMainArea {
                     if (messageFlags.cannotUseShow) { return true; }
                     if (messageFlags.dungeonTimer) { return true; }
                     if (messageFlags.foundAndEquipped) { return true; }
+                    if (messageFlags.singleStatReport) { return true; }
+                    if (messageFlags.resourcesReport) { return true; }
                 }
                 else if (!messageFlags.sentFromStreamer) {
                     if (messageFlags.playerJoining) { return true; }
@@ -138,8 +148,10 @@ class SiteMainArea {
                     if (messageFlags.playerRaid) { return true; }
                     if (messageFlags.playerDungeon) { return true; }
                     if (messageFlags.playerStats) { return true; }
+                    if (messageFlags.playerResource) { return true; }
 
                     if (messageFlags.isNowLiveMessage && messageFlags.streamElements) { return true; }
+                    if (messageFlags.nbSpamWarning && messageFlags.nightbot) { return true; }
                 }
             }
 
