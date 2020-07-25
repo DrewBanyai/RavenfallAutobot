@@ -67,6 +67,7 @@ class TwitchController {
             case "353":
             case "366":                         if (SHOW_LOW_LEVEL_MESSAGES) console.log(message.event + " EVENT: " + message.message);                             break;
             case "JOIN":                        if (SHOW_LOW_LEVEL_MESSAGES) console.log("JOIN EVENT: " + message.username);                                        break;
+            case "PART":                        if (SHOW_LOW_LEVEL_MESSAGES) console.log("PART EVENT: " + message.username);                                        break;
             case "PRIVMSG":                     if (SHOW_LOW_LEVEL_MESSAGES) console.log("CHAT MESSAGE - " + message.username + ": " + message.message);            break;
             case "GLOBALUSERSTATE":     
             case "USERSTATE":

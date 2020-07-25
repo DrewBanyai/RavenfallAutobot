@@ -22,8 +22,15 @@ class LoginBox {
     createInputPairing(inputID, title, inputValue) {
         let inputPairing = new Container({ id: inputID + "InputPairing", style: { display: "block", }, });
 
-        let inputTitleLabel = new Label({ id: inputID + "TitleLabel", attributes: { value: title }, style: { padding: "0px 5px 0px 0px", color: "rgb(120, 120, 120)" }, });
-        inputPairing.appendChild(inputTitleLabel.content);
+        let titleContainer = new Container({ id: inputID + "TitleContainer", style: { display: "inline-flex", }, });
+        inputPairing.appendChild(titleContainer.content);
+
+        let inputTitleLabel = new Label({ id: inputID + "TitleLabel", attributes: { value: title }, style: { padding: "0px 5px 0px 0px", color: "rgb(120, 120, 120)", display: "inline-flex", }, });
+        titleContainer.appendChild(inputTitleLabel.content);
+
+        let questionIcon = new Fontawesome({ id: inputID + "QuestionIcon", style: { color: "rgb(200, 200, 200)", fontSize: "12px", margin: "4px 4px 4px 4px", cursor: "pointer", display: "none", }});
+        titleContainer.appendChild(questionIcon.content);
+        inputPairing.getQuestionIcon = () => { return questionIcon; }
 
         let inputTextInput = new TextInput({ id: inputID + "TextInput", attributes: { value: inputValue }, style: { width: "300px", margin: "0px 5px 0px 5px" }, });
         inputPairing.appendChild(inputTextInput.content);
@@ -44,6 +51,11 @@ class LoginBox {
 
         let twitchOAuthToken = this.createInputPairing("TwitchOAuthPassword", "OAuth Password:", token);
         element.appendChild(twitchOAuthToken.content);
+
+        let oauthQuestionIcon = twitchOAuthToken.getQuestionIcon();
+        oauthQuestionIcon.setSymbol("fas fa-question-circle");
+        oauthQuestionIcon.content.style.display = "inline-flex";
+        oauthQuestionIcon.content.onclick = () => { window.open("https://twitchapps.com/tmi/"); }
 
         let connectButton = new PrimaryButton({ id: "TwitchConnectButton", secondary: "true", attributes: { value: "connect", }, style: { width: "100px", height: "24px", position: "relative", top: "6px", margin: "0px auto 10px auto", }, });
         connectButton.SetOnClick(async () => {

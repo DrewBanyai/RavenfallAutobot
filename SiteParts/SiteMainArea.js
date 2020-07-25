@@ -54,6 +54,8 @@ class SiteMainArea {
                 cannotUseShow:      (messageLower.includes("you do not have permission to set the currently observed player.")),
                 foundAndEquipped:   (messageLower.includes(", you found and equipped")),
 
+                playerJoining:      (messageLower.includes("!join")),
+                playerLeaving:      (messageLower.includes("!leave")),
                 playerTraining:     (messageLower.includes("!train ")),
                 playerCrafting:     (messageLower.includes("!craft ")),
                 playerRaid:         (messageLower.includes("!raid")),
@@ -129,6 +131,8 @@ class SiteMainArea {
                     if (messageFlags.foundAndEquipped) { return true; }
                 }
                 else if (!messageFlags.sentFromStreamer) {
+                    if (messageFlags.playerJoining) { return true; }
+                    if (messageFlags.playerLeaving) { return true; }
                     if (messageFlags.playerTraining) { return true; }
                     if (messageFlags.playerCrafting) { return true; }
                     if (messageFlags.playerRaid) { return true; }
