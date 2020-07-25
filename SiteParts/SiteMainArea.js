@@ -34,7 +34,6 @@ class SiteMainArea {
             let messageLower = message.message.toLowerCase();
 
             if (message.username === username.toLowerCase()) {
-
                 //  Auto-reply on raids
                 if (this.autoOptions.autoRaid && messageLower.includes("help fight him by typing !raid")) {
                     TwitchController.SendChatMessage(channel, "!raid");
@@ -84,7 +83,7 @@ class SiteMainArea {
             if (this.elements.twitchChatContainer.content.children.length >= 20) {
                 this.elements.twitchChatContainer.content.removeChild(this.elements.twitchChatContainer.content.children[0]);
             }
-            this.elements.twitchChatContainer.createChatLine(message.username, message.message);
+            this.elements.twitchChatContainer.createChatLine(message.username, message.message, messageLower.includes(myUsername.toLowerCase()));
             return true;
         });
     }

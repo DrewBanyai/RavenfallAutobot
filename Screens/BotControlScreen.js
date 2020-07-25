@@ -8,7 +8,7 @@ class BotControlScreen {
     }
 
     generateContent() {
-        let container = new Container({ id: "BotControlScreen", style: { width: "920px", height: "100%", backgroundColor: "rgb(64, 64 ,64)", borderRadius: "6px", }, });
+        let container = new Container({ id: "BotControlScreen", style: { width: "920px", height: "100%", backgroundColor: "rgb(64, 64 ,64)", padding: "6px", color: "rgb(200, 200, 200)" }, });
 
         //  Create the auto raid options checkbox
         let autoRaidCheckboxContainer = new Container({ id: "AutoRaidCheckboxContainer", style: { display: "flex" }, });
