@@ -42,7 +42,7 @@ class SiteMainArea {
 
                 vendorSale:         (messageLower.includes("you sold ") &&  messageLower.includes("to the vendor for")),
                 raidJoinedMsg:      (messageLower.includes("you have joined the raid. good luck!")),
-                dungeonJoinedMsg:   (messageLower.includes("you have joined the dunegon. good luck!")),
+                dungeonJoinedMsg:   (messageLower.includes("you have joined the dungeon. good luck!")),
                 disembarkedFerry:   (messageLower.includes(", you have disembarked the ferry.")),
                 raidTryOnFerry:     (messageLower.includes("you cannot join the raid while on the ferry.")),
                 youHaveToJoin:      (messageLower.includes("you have to !join the game before using this command.")),
