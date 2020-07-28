@@ -88,7 +88,7 @@ class SiteMainArea {
                 //  Auto re-join if we aren't connected (also try to re-fire our last message before)
                 let raidUnjoined =  (messageLower === (myUsername.toLowerCase() + ", you have to !join the game before using this command."));
                 let dungeonUnjoined =  (messageLower === (myUsername.toLowerCase() + ", you are not currently playing, use the !join to start playing."));
-                if (relevantToMe && (raidUnjoined || dungeonUnjoined)) {
+                if (messageFlags.relevantToMe && (raidUnjoined || dungeonUnjoined)) {
                     let lastCommand = {};
                     Object.assign(lastCommand, lastChatMessage);
                     TwitchController.SendChatMessage(channel, "!join");
