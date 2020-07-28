@@ -101,7 +101,7 @@ class SiteMainArea {
                 //  Auto-join when told to
                 if (messageLower.includes("autobots, roll out")) {
                     TwitchController.SendChatMessage(channel, "!join");
-                    TwitchController.SendChatMessage(channel, "!train all");
+                    setTimeout(() => { TwitchController.SendChatMessage(channel, "!train all"); }, 400);
                     return true;
                 }
 
