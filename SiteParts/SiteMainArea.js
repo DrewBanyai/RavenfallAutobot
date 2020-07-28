@@ -58,6 +58,7 @@ class SiteMainArea {
                 foundAndEquipped:   (messageLower.includes(", you found and equipped")),
                 singleStatReport:   (messageLower.includes(", ") && messageLower.includes(" (") && messageLower.includes("%)")),
                 resourcesReport:    (messageLower.includes(", wood ") && messageLower.includes(", ore ") && messageLower.includes(", fish ") && messageLower.includes(", wheat ") && messageLower.includes(", coin ")),
+                activePetChange:    (messageLower.includes(", you have changed your active pet to ")),
 
                 playerJoining:      (messageLower.includes("!join")),
                 playerLeaving:      (messageLower.includes("!leave")),
@@ -67,6 +68,7 @@ class SiteMainArea {
                 playerDungeon:      (messageLower.includes("!dungeon")),
                 playerStats:        (messageLower.includes("!stats")),
                 playerResource:     (messageLower.includes("!res")),
+                playerToggle:       (messageLower.includes("!toggle")),
 
                 isNowLiveMessage:   (messageLower.includes("is now live! streaming ")),
 
@@ -141,6 +143,7 @@ class SiteMainArea {
                     if (messageFlags.foundAndEquipped) { return true; }
                     if (messageFlags.singleStatReport) { return true; }
                     if (messageFlags.resourcesReport) { return true; }
+                    if (messageFlags.activePetChange) { return true; }
                 }
                 else if (!messageFlags.sentFromStreamer) {
                     if (messageFlags.playerJoining) { return true; }
@@ -151,6 +154,7 @@ class SiteMainArea {
                     if (messageFlags.playerDungeon) { return true; }
                     if (messageFlags.playerStats) { return true; }
                     if (messageFlags.playerResource) { return true; }
+                    if (messageFlags.playerToggle) { return true; }
 
                     if (messageFlags.isNowLiveMessage && messageFlags.streamElements) { return true; }
                     if (messageFlags.nbSpamWarning && messageFlags.nightbot) { return true; }
