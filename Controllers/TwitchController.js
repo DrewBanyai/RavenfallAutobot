@@ -4,6 +4,8 @@ let twitchAPI = null;
 let lastChatMessage = { c: null, m: null };
 
 const SHOW_LOW_LEVEL_MESSAGES = false;
+const SHOW_WHISPERS = false;
+const SHOW_PROBLEM_MESSAGES = false;
 const SHOW_UNHANDLED_MESSAGES = true;
 
 
@@ -76,7 +78,10 @@ class TwitchController {
             case "HOST_ON":                     if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST ON: " + message.message + " on " + message.username);                break;
             case "HOST_OFF":                    if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST OFF: " + message.message + " on " + message.username);               break;
             case "HOST_TARGET_WENT_OFFLINE":    if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST TARGET OFFLINE: " + message.message + " on " + message.username);    break;
-            default:                            if (SHOW_UNHANDLED_MESSAGES) console.log("UNHANDLED:", message);                                                                                               break;
+            case "WHISPER":                     if (SHOW_WHISPERS) console.log("WHISPER from " + message.username + ": " + message.message);                        break;
+            case "DISCONNECTED":                if (SHOW_PROBLEM_MESSAGES) console.log("DISCONNECTED");                                                             break;
+            case "ERROR_ENCOUNTERED":           if (SHOW_PROBLEM_MESSAGES) console.log("ERROR ENCOUNTERED");                                                        break;
+            default:                            if (SHOW_UNHANDLED_MESSAGES) console.log("UNHANDLED:", message);                                                    break;
         }
     };
 
