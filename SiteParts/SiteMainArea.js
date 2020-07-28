@@ -46,6 +46,7 @@ class SiteMainArea {
                 disembarkedFerry:   (messageLower.includes(", you have disembarked the ferry.")),
                 raidTryOnFerry:     (messageLower.includes("you cannot join the raid while on the ferry.")),
                 youHaveToJoin:      (messageLower.includes("you have to !join the game before using this command.")),
+                dungeonUnjoined:    (messageLower.includes(", you are not currently playing. use !join to start playing!")),
                 dungeonTimer:       (messageLower.includes(" until dungeon starts.")),
                 youNeedToCraft:     (messageLower.includes(", you need") && messageLower.includes(" to craft ")),
                 alreadyJoined:      (messageLower.includes("join failed. reason: you're already playing!")),
@@ -86,8 +87,8 @@ class SiteMainArea {
                 }
 
                 //  Auto re-join if we aren't connected (also try to re-fire our last message before)
-                let raidUnjoined =  (messageLower === (myUsername.toLowerCase() + ", you have to !join the game before using this command."));
-                let dungeonUnjoined =  (messageLower === (myUsername.toLowerCase() + ", you are not currently playing, use the !join to start playing."));
+                let raidUnjoined = (messageLower === (myUsername.toLowerCase() + ", you have to !join the game before using this command."));
+                let dungeonUnjoined = (messageLower === (myUsername.toLowerCase() + ", you are not currently playing, use the !join to start playing."));
                 if (messageFlags.relevantToMe && (raidUnjoined || dungeonUnjoined)) {
                     let lastCommand = {};
                     Object.assign(lastCommand, lastChatMessage);
@@ -128,6 +129,7 @@ class SiteMainArea {
                     if (messageFlags.disembarkedFerry) { return true; }
                     if (messageFlags.raidTryOnFerry) { return true; }
                     if (messageFlags.youHaveToJoin) { return true; }
+                    if (messageFlags.dungeonUnjoined) { return true; }
                     if (messageFlags.youNeedToCraft) { return true; }
                     if (messageFlags.alreadyJoined) { return true; }
                     if (messageFlags.playerGotItem) { return true; }
