@@ -509,7 +509,10 @@ var TwitchJs = function() {
                 if (!e.transmit && t[r] === qt) return;
                 t[r] = (n = t[r], function() {
                     for (var o = Date.now(), i = new Array(arguments.length), a = Object.getPrototypeOf && Object.getPrototypeOf(this) === Mt ? Mt : this, s = 0; s < i.length; s++) i[s] = arguments[s];
-                    if (e.serialize && !e.asObject && Ht(i, this._serialize, this.serializers, this._stdErrSerialize), e.asObject ? n.call(a, kt(this, r, i, o)) : n.apply(a, i), e.transmit) {
+                    if (e.serialize &&
+                        !e.asObject &&
+                        Ht(i, this._serialize, this.serializers, this._stdErrSerialize),
+                        e.asObject ? n.call(a, kt(this, r, i, o)) : n.apply(a, i), e.transmit) {
                         var u = e.transmit.level || t.level,
                             c = xt.levels.values[u],
                             l = xt.levels.values[r];
