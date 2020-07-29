@@ -56,6 +56,11 @@ class SiteHeader {
         drewTheBearIcon.setValue("./Images/DrewTheBear_Icon.png");
         drewTheBearIcon.content.onclick = () => { window.open("http://twitch.tv/DrewTheBear"); }
         container.appendChild(drewTheBearIcon.content);
+
+        let githubIcon = new Image({ id: "GithubIcon", style: { width: "36px", height: "36px", margin: "5px", borderRadius: "50%", border: "3px solid rgb(200, 200, 200)", cursor: "pointer", }});
+        githubIcon.setValue("./Images/Github_Icon.png");
+        githubIcon.content.onclick = () => { window.open("https://github.com/DrewBanyai/RavenfallAutobot"); }
+        container.appendChild(githubIcon.content);
     }
 
     async loadSiteLoginLogoutBox(container) {
