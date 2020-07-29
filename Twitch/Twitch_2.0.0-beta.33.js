@@ -1,6 +1,8 @@
 var TwitchJs = function() {
     "use strict";
 
+    var FULL_LOGGING = false;
+
     var e = function(t, r) {
         return (e = Object.setPrototypeOf || { __proto__: [] }
             instanceof Array && function(e, t) { e.__proto__ = t } || function(e, t) { for (var r in t) t.hasOwnProperty(r) && (e[r] = t[r]) })(t, r)
@@ -1732,7 +1734,8 @@ var TwitchJs = function() {
                 var o = At(t.split("/")),
                     i = $e(r, "tags.displayName") || $e(r, "username") || "",
                     s = $e(r, "message") || "";
-                this._log.info("" + o.join("/"), i + (s ? ":" : ""), s), o.filter((function(e) { return "#" !== e })).reduce((function(t, o) { var i = a(t, [o]); return i.length > 1 && e.prototype.emit.call(n, o, r), e.prototype.emit.call(n, i.join("/"), r), i }), [])
+                if (FULL_LOGGING) this._log.info("" + o.join("/"), i + (s ? ":" : ""), s)
+                o.filter((function(e) { return "#" !== e })).reduce((function(t, o) { var i = a(t, [o]); return i.length > 1 && e.prototype.emit.call(n, o, r), e.prototype.emit.call(n, i.join("/"), r), i }), [])
             }
             e.prototype.emit.call(this, Pt.ALL, r)
         }, s.prototype._getChannels = function() { return Object.keys(this._channelState) }, s.prototype._getChannelState = function(e) { return this._channelState[e] }, s.prototype._setChannelState = function(e, t) { this._channelState[e] = t }, s.prototype._removeChannelState = function(e) {
