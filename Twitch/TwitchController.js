@@ -1,3 +1,5 @@
+//  Working with twitchJS 2.0.0-beta.33
+
 let twitchMessageCallbacks = {};
 let twitchChat = null;
 let twitchAPI = null;
