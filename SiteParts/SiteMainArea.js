@@ -32,6 +32,7 @@ class SiteMainArea {
     setTwitchChatCallbacks() {
         TwitchController.AddMessageCallback("PRIVMSG", (message) => {
             let messageLower = message.message.toLowerCase();
+            let iAmStreamer = (myUsername.toLowerCase() === channel.toLowerCase());
 
             let messageFlags = {
                 relevantToMe:       (messageLower.includes(myUsername.toLowerCase()) ||  (message.username === myUsername.toLowerCase())),
@@ -70,6 +71,7 @@ class SiteMainArea {
                 playerResource:     (messageLower.includes("!res")),
                 playerToggle:       (messageLower.includes("!toggle")),
                 playerUseMarket:    (messageLower.includes("!buy") || messageLower.includes("!sell") || messageLower.includes("!vendor")),
+                playerSeekingHelp:  (messageLower.substr(0, 5) === "!help"),
 
                 isNowLiveMessage:   (messageLower.includes("is now live! streaming ")),
 
@@ -160,6 +162,20 @@ class SiteMainArea {
 
                     if (messageFlags.isNowLiveMessage && messageFlags.streamElements) { return true; }
                     if (messageFlags.nbSpamWarning && messageFlags.nightbot) { return true; }
+                }
+            }
+
+            if (iAmStreamer && this.autoOptions.helpBot && messageFlags.playerSeekingHelp) {
+                helpBotOptions.raidTrigger = this.autoOptions.raidTrigger;
+                let helpResponse = parseHelpCommand(messageLower);
+                if (helpResponse.success) {
+                    let sendHelpResponse = null;
+                    sendHelpResponse = (helpResponse) => {
+                        TwitchController.SendChatMessage(channel, helpResponse.reply[0]);
+                        helpResponse.reply.shift();
+                        if (sendHelpResponse && (helpResponse.reply.length !== 0)) { setTimeout(() => sendHelpResponse(helpResponse), 500); }
+                    };
+                    sendHelpResponse(helpResponse);
                 }
             }
 
