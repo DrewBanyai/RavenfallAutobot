@@ -69,6 +69,7 @@ class SiteMainArea {
                 playerStats:        (messageLower.includes("!stats")),
                 playerResource:     (messageLower.includes("!res")),
                 playerToggle:       (messageLower.includes("!toggle")),
+                playerUseMarket:    (messageLower.includes("!buy") || messageLower.includes("!sell") || messageLower.includes("!vendor")),
 
                 isNowLiveMessage:   (messageLower.includes("is now live! streaming ")),
 
@@ -155,6 +156,7 @@ class SiteMainArea {
                     if (messageFlags.playerStats) { return true; }
                     if (messageFlags.playerResource) { return true; }
                     if (messageFlags.playerToggle) { return true; }
+                    if (messageFlags.playerUseMarket) { return true; }
 
                     if (messageFlags.isNowLiveMessage && messageFlags.streamElements) { return true; }
                     if (messageFlags.nbSpamWarning && messageFlags.nightbot) { return true; }
