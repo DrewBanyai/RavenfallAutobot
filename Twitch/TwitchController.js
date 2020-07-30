@@ -79,6 +79,7 @@ class TwitchController {
             case "HOSTTARGET":                  if (SHOW_LOW_LEVEL_MESSAGES) console.log("Host Target: " + message.username);                                       break;
             case "HOST_ON":                     if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST ON: " + message.message + " on " + message.username);                break;
             case "HOST_OFF":                    if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST OFF: " + message.message + " on " + message.username);               break;
+            case "HOSTED/WITHOUT_VIEWERS":      if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST (NO VIEWERS): " + message.username);                                 break;
             case "HOST_TARGET_WENT_OFFLINE":    if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST TARGET OFFLINE: " + message.message + " on " + message.username);    break;
             case "USER_BANNED":                 if (SHOW_LOW_LEVEL_MESSAGES) console.log("USER BANNED: " + message.username);                                       break;
             case "WHISPER":                     if (SHOW_WHISPERS) console.log("WHISPER from " + message.username + ": " + message.message);                        break;
