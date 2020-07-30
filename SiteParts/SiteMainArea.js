@@ -1,7 +1,7 @@
 class SiteMainArea {
     constructor(options) {
         this.options = options;
-        this.autoOptions = { autoRaid: true, autoDungeon: true };
+        this.autoOptions = { autoRaid: true, autoDungeon: true, helpBot: false, raidTrigger: false };
         this.elements = { botControlScreen: null, twitchChatContainer: null, };
         this.content = this.generateContent();
     }
@@ -169,8 +169,9 @@ class SiteMainArea {
         });
     }
 
-    ShowChooseCampaignUI(show) {
+    ShowMainAreaUI(show) {
         this.elements.botControlScreen.setHidden(!show);
+        this.elements.botControlScreen.update();
         this.elements.twitchChatContainer.content.style.display = show ? "block" : "none";
     }
 }

@@ -61,7 +61,7 @@ class LoginBox {
         connectButton.SetOnClick(async () => {
             let connectResult = await TwitchController.Connect(twitchChannelName.getValue(), twitchUserName.getValue(), twitchOAuthToken.getValue());
             SITE_HEADER.removeLoginBox();
-            SITE_MAIN_AREA.ShowChooseCampaignUI(connectResult);
+            SITE_MAIN_AREA.ShowMainAreaUI(connectResult);
             if (this.loginCallback) { this.loginCallback(); }
         });
         element.appendChild(connectButton.content);
