@@ -1,10 +1,10 @@
 class BotControlScreen {
     constructor(options) {
         this.options = options;
-        this.checkboxOptions = { autoRaid: true, autoDungeon: true, helpBot: false, raidTrigger: false };
+        this.checkboxOptions = { autoRaid: true, autoDungeon: true, helpBot: false, autoRaidTrigger: false, allowRaidTrigger: false };
         this.changeOptionsCallback = null;
-        this.elements = { autoRaidCheckbox: null, autoDungeonCheckbox: null, helpBotCheckbox: null, raidTriggerCheckbox: null, streamerOptions: null, };
-        this.optionTitleWidth = "200px";
+        this.elements = { autoRaidCheckbox: null, autoDungeonCheckbox: null, helpBotCheckbox: null, autoRaidTriggerCheckbox: null, allowRaidTriggerCheckbox: null, streamerOptions: null, };
+        this.optionTitleWidth = "300px";
         this.content = this.generateContent();
     }
 
@@ -12,7 +12,7 @@ class BotControlScreen {
         let container = new Container({ id: "BotControlScreen", style: { width: "920px", height: "100%", backgroundColor: "rgb(64, 64 ,64)", padding: "6px", color: "rgb(200, 200, 200)" }, });
 
         //  Create the auto raid options checkbox
-        let autoRaidCheckboxContainer = new Container({ id: "AutoRaidCheckboxContainer", style: { display: "flex" }, });
+        let autoRaidCheckboxContainer = new Container({ id: "AutoRaidCheckboxContainer", style: { display: "flex", margin: "0px 0px 2px 0px", }, });
         container.appendChild(autoRaidCheckboxContainer.content);
 
         let autoRaidTitleLabel = new Label({ id: "AutoRaidTitleLabel", attributes: { value: "Auto-Join all raids", }, style: { width: this.optionTitleWidth, }, });
@@ -23,7 +23,7 @@ class BotControlScreen {
         autoRaidCheckboxContainer.appendChild(this.elements.autoRaidCheckbox.content);
 
         //  Create the auto dungeon options checkbox
-        let autoDungeonCheckboxContainer = new Container({ id: "AutoDungeonCheckboxContainer", style: { display: "flex", }, });
+        let autoDungeonCheckboxContainer = new Container({ id: "AutoDungeonCheckboxContainer", style: { display: "flex", margin: "0px 0px 2px 0px", }, });
         container.appendChild(autoDungeonCheckboxContainer.content);
 
         let autoDungeonTitleLabel = new Label({ id: "AutoDungeonTitleLabel", attributes: { value: "Auto-Join all dungeons", }, style: { width: this.optionTitleWidth, }, });
@@ -41,7 +41,7 @@ class BotControlScreen {
         this.elements.streamerOptions.appendChild(streamerOptionsTitleLabel.content);
 
         //  Create the help bot checkbox
-        let helpBotCheckboxContainer = new Container({ id: "HelpBotCheckboxContainer", style: { display: "flex", }, });
+        let helpBotCheckboxContainer = new Container({ id: "HelpBotCheckboxContainer", style: { display: "flex", margin: "0px 0px 2px 0px", }, });
         this.elements.streamerOptions.appendChild(helpBotCheckboxContainer.content);
 
         let helpBotTitleLabel = new Label({ id: "HelpBotTitleLabel", attributes: { value: "Run the '!help' bot", }, style: { width: this.optionTitleWidth, }, });
@@ -51,16 +51,27 @@ class BotControlScreen {
         this.elements.helpBotCheckbox.setClickCallback(() => { this.changeOptions(); });
         helpBotCheckboxContainer.appendChild(this.elements.helpBotCheckbox.content);
 
-        //  Create the raid trigger checkbox
-        let raidTriggerCheckboxContainer = new Container({ id: "RaidTriggerCheckboxContainer", style: { display: "flex", }, });
-        this.elements.streamerOptions.appendChild(raidTriggerCheckboxContainer.content);
+        //  Create the auto raid trigger checkbox
+        let autoRaidTriggerCheckboxContainer = new Container({ id: "AutoRaidTriggerCheckboxContainer", style: { display: "flex", margin: "0px 0px 2px 0px", }, });
+        this.elements.streamerOptions.appendChild(autoRaidTriggerCheckboxContainer.content);
 
-        let raidTriggerTitleLabel = new Label({ id: "RaidTriggerTitleLabel", attributes: { value: "Trigger raids every X minutes", }, style: { width: this.optionTitleWidth, }, });
-        raidTriggerCheckboxContainer.appendChild(raidTriggerTitleLabel.content);
+        let autoRaidTriggerTitleLabel = new Label({ id: "AutoRaidTriggerTitleLabel", attributes: { value: "Automatically trigger raids every few minutes", }, style: { width: this.optionTitleWidth, }, });
+        autoRaidTriggerCheckboxContainer.appendChild(autoRaidTriggerTitleLabel.content);
 
-        this.elements.raidTriggerCheckbox = new Checkbox({ id: "RaidTriggerCheckbox", style: { margin: "0px 0px 0px 30px", }, checked: false });
-        this.elements.raidTriggerCheckbox.setClickCallback(() => { this.changeOptions(); });
-        raidTriggerCheckboxContainer.appendChild(this.elements.raidTriggerCheckbox.content);
+        this.elements.autoRaidTriggerCheckbox = new Checkbox({ id: "AutoRaidTriggerCheckbox", style: { margin: "0px 0px 0px 30px", }, checked: false });
+        this.elements.autoRaidTriggerCheckbox.setClickCallback(() => { this.changeOptions(); });
+        autoRaidTriggerCheckboxContainer.appendChild(this.elements.autoRaidTriggerCheckbox.content);
+
+        //  Create the allow raid triggers checkbox
+        let allowRaidTriggerCheckboxContainer = new Container({ id: "AllowRaidTriggerCheckboxContainer", style: { display: "flex", margin: "0px 0px 2px 0px", }, });
+        this.elements.streamerOptions.appendChild(allowRaidTriggerCheckboxContainer.content);
+
+        let allowRaidTriggerTitleLabel = new Label({ id: "AllowRaidTriggerTitleLabel", attributes: { value: "Allow users to trigger raids with !raidstart", }, style: { width: this.optionTitleWidth, }, });
+        allowRaidTriggerCheckboxContainer.appendChild(allowRaidTriggerTitleLabel.content);
+
+        this.elements.allowRaidTriggerCheckbox = new Checkbox({ id: "AllowRaidTriggerCheckbox", style: { margin: "0px 0px 0px 30px", }, checked: false });
+        this.elements.allowRaidTriggerCheckbox.setClickCallback(() => { this.changeOptions(); });
+        allowRaidTriggerCheckboxContainer.appendChild(this.elements.allowRaidTriggerCheckbox.content);
 
         return container.content;
     }
@@ -85,8 +96,13 @@ class BotControlScreen {
             optionsChanged = true;
         }
 
-        if (this.elements.raidTriggerCheckbox && (this.elements.raidTriggerCheckbox.getChecked() !== this.checkboxOptions.raidTrigger)) {
-            this.checkboxOptions.raidTrigger = this.elements.raidTriggerCheckbox.getChecked();
+        if (this.elements.autoRaidTriggerCheckbox && (this.elements.autoRaidTriggerCheckbox.getChecked() !== this.checkboxOptions.autoRaidTrigger)) {
+            this.checkboxOptions.autoRaidTrigger = this.elements.autoRaidTriggerCheckbox.getChecked();
+            optionsChanged = true;
+        }
+
+        if (this.elements.allowRaidTriggerCheckbox && (this.elements.allowRaidTriggerCheckbox.getChecked() !== this.checkboxOptions.allowRaidTrigger)) {
+            this.checkboxOptions.allowRaidTrigger = this.elements.allowRaidTriggerCheckbox.getChecked();
             optionsChanged = true;
         }
 

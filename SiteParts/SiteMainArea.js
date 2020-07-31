@@ -1,7 +1,9 @@
 class SiteMainArea {
     constructor(options) {
         this.options = options;
-        this.autoOptions = { autoRaid: true, autoDungeon: true, helpBot: false, raidTrigger: false };
+        this.autoRaidTriggerMinutes = 10;
+        this.lastRaidOccurred = 0;
+        this.autoOptions = { autoRaid: true, autoDungeon: true, helpBot: false, autoRaidTrigger: false, allowRaidTrigger: false, };
         this.elements = { botControlScreen: null, twitchChatContainer: null, };
         this.content = this.generateContent();
     }
@@ -19,12 +21,16 @@ class SiteMainArea {
 
         //  Create the twitch chat stream early so we can pass it into other classes
         this.elements.twitchChatContainer = new TwitchChatScreen({});
-
-        this.elements.twitchChatContainer = new TwitchChatScreen({});
         this.elements.twitchChatContainer.setHidden(true);
         centeredMainArea.appendChild(this.elements.twitchChatContainer.content);
 
         this.setTwitchChatCallbacks();
+
+        setInterval(() => {
+            if (!this.autoOptions.autoRaidTrigger) { return; }
+            let secondsSinceLastRaid = (((new Date()).getTime() - this.lastRaidOccurred) / 1000);
+            if (secondsSinceLastRaid >= (this.autoRaidTriggerMinutes * 60 - 10)) { this.triggerRaid(null); }
+        }, this.autoRaidTriggerMinutes * 60 * 1000)
 
         return container.content;
     }
@@ -41,6 +47,8 @@ class SiteMainArea {
                 streamElements:     (message.username === "streamelements"),
                 nightbot:           (message.username === "nightbot"),
 
+                raidStarted:        (messageLower.includes("help fight him by typing !raid")),
+                dungeonStarted:     (messageLower.includes("type !dungeon to join.")),
                 vendorSale:         (messageLower.includes("you sold ") &&  messageLower.includes("to the vendor for")),
                 raidJoinedMsg:      (messageLower.includes("you have joined the raid. good luck!")),
                 dungeonJoinedMsg:   (messageLower.includes("you have joined the dungeon. good luck!")),
@@ -61,17 +69,18 @@ class SiteMainArea {
                 resourcesReport:    (messageLower.includes(", wood ") && messageLower.includes(", ore ") && messageLower.includes(", fish ") && messageLower.includes(", wheat ") && messageLower.includes(", coin ")),
                 activePetChange:    (messageLower.includes(", you have changed your active pet to ")),
 
-                playerJoining:      (messageLower.includes("!join")),
-                playerLeaving:      (messageLower.includes("!leave")),
+                playerJoining:      (messageLower === "!join"),
+                playerLeaving:      (messageLower === "!leave"),
                 playerTraining:     (messageLower.includes("!train ")),
                 playerCrafting:     (messageLower.includes("!craft ")),
-                playerRaid:         (messageLower.includes("!raid")),
-                playerDungeon:      (messageLower.includes("!dungeon")),
-                playerStats:        (messageLower.includes("!stats")),
-                playerResource:     (messageLower.includes("!res")),
+                playerRaid:         (messageLower === "!raid"),
+                playerDungeon:      (messageLower === "!dungeon"),
+                playerStats:        (messageLower === "!stats"),
+                playerResource:     (messageLower === "!res"),
                 playerToggle:       (messageLower.includes("!toggle")),
                 playerUseMarket:    (messageLower.includes("!buy") || messageLower.includes("!sell") || messageLower.includes("!vendor")),
                 playerSeekingHelp:  (messageLower.substr(0, 5) === "!help"),
+                playerRaidTrigger:  (messageLower === "!raidstart"),
 
                 isNowLiveMessage:   (messageLower.includes("is now live! streaming ")),
 
@@ -80,13 +89,16 @@ class SiteMainArea {
 
             if (messageFlags.sentFromRavenbot) {
                 //  Auto-reply on raids
-                if (this.autoOptions.autoRaid && messageLower.includes("help fight him by typing !raid")) {
-                    TwitchController.SendChatMessage(channel, "!raid");
-                    return true;
+                if (messageFlags.raidStarted) {
+                    this.lastRaidOccurred = (new Date()).getTime();
+                    if (this.autoOptions.autoRaid) {
+                        TwitchController.SendChatMessage(channel, "!raid");
+                        return true;
+                    }
                 }
 
                 //  Auto-reply on dungeons
-                if (this.autoOptions.autoDungeon && messageLower.includes("type !dungeon to join.")) {
+                if (this.autoOptions.autoDungeon && messageFlags.dungeonStarted) {
                     TwitchController.SendChatMessage(channel, "!dungeon");
                     return true;
                 }
@@ -98,8 +110,8 @@ class SiteMainArea {
                     let lastCommand = {};
                     Object.assign(lastCommand, lastChatMessage);
                     TwitchController.SendChatMessage(channel, "!join");
-                    TwitchController.SendChatMessage(channel, "!train all");
-                    if (lastCommand.m) { TwitchController.SendChatMessage(lastCommand.c, lastCommand.m); }
+                    setTimeout(() => { TwitchController.SendChatMessage(channel, "!train all"); }, 400);
+                    setTimeout(() => { if (lastCommand.m) { TwitchController.SendChatMessage(lastCommand.c, lastCommand.m); } }, 800);
                     return true;
                 }
             }
@@ -165,24 +177,39 @@ class SiteMainArea {
                 }
             }
 
-            if (iAmStreamer && this.autoOptions.helpBot && messageFlags.playerSeekingHelp) {
-                helpBotOptions.raidTrigger = this.autoOptions.raidTrigger;
-                let helpResponse = parseHelpCommand(messageLower);
-                if (helpResponse.success) {
-                    let sendHelpResponse = null;
-                    sendHelpResponse = (helpResponse) => {
-                        TwitchController.SendChatMessage(channel, helpResponse.reply[0]);
-                        helpResponse.reply.shift();
-                        if (sendHelpResponse && (helpResponse.reply.length !== 0)) { setTimeout(() => sendHelpResponse(helpResponse), 500); }
-                    };
-                    sendHelpResponse(helpResponse);
+            if (iAmStreamer) {
+                if (this.autoOptions.allowRaidTrigger && messageFlags.playerRaidTrigger) {
+                    this.triggerRaid(message);
                 }
-            }
+
+                if (this.autoOptions.helpBot && messageFlags.playerSeekingHelp) {
+                    helpBotOptions.raidTrigger = this.autoOptions.raidTrigger;
+                    let helpResponse = parseHelpCommand(messageLower);
+                    if (helpResponse.success) {
+                        let sendHelpResponse = null;
+                        sendHelpResponse = (helpResponse) => {
+                            TwitchController.SendChatMessage(channel, helpResponse.reply[0]);
+                            helpResponse.reply.shift();
+                            if (sendHelpResponse && (helpResponse.reply.length !== 0)) { setTimeout(() => sendHelpResponse(helpResponse), 500); }
+                        };
+                        sendHelpResponse(helpResponse);
+                    }
+                }
+            } 
 
             //  Add a new entry to our on-screen chat
             this.elements.twitchChatContainer.addChatLine(message.username, message.message, messageFlags.relevantToMe);
             return true;
         });
+    }
+
+    triggerRaid(triggerMessage) {
+        if (!triggerMessage) { TwitchController.SendChatMessage(channel, "!raid start"); return; }
+
+        let secondsSinceLastRaid = Math.round(((new Date()).getTime() - this.lastRaidOccurred) / 1000);
+        let autoRaidTriggerSeconds = this.autoRaidTriggerMinutes * 60;
+        if (secondsSinceLastRaid > autoRaidTriggerSeconds) { TwitchController.SendChatMessage(channel, "!raid start"); }
+        else { TwitchController.SendChatMessage(channel, "Sorry, a raid has occurred very recently. Please wait " + (autoRaidTriggerSeconds - secondsSinceLastRaid).toString() + " seconds and try again."); }
     }
 
     ShowMainAreaUI(show) {
