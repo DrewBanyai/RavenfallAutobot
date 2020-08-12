@@ -2,14 +2,14 @@ const helpBotOptions = { raidTrigger: false };
 
 let parseHelpCommand = (message) => {
     let isHelpCommand = (message.substr(0, 5) === "!help");
-    if (!isHelpCommand) { return { success: false, reason: "Message is a !help command", reply: "Failed to parse help command." }; }
+    if (!isHelpCommand) { return { success: false, reason: "Message is a !help command", reply: [ "Failed to parse help command." ] }; }
 
     if (message === "!help" || message === "!help ") {
-        return { success: true, reply: "HELP: HelpBot (that's me!) is here to help. Ask me about a specific subject by using the command '!help SUBJECT'. For a list of help subjects, type '!help subjects'", };
+        return { success: true, reply: [ "HELP: HelpBot (that's me!) is here to help. Ask me about a specific subject by using the command '!help SUBJECT'. For a list of help subjects, type '!help subjects'" ] };
     }
 
     let hasSubject = (message.substr(0, 6) === "!help ") && (message.length > 6);
-    if (!hasSubject) { return { success: false, reason: "!help command is improperly formatted", reply: "Failed to parse help command." }; }
+    if (!hasSubject) { return { success: false, reason: "!help command is improperly formatted", reply: [ "Failed to parse help command." ] }; }
     let helpSubject = message.substr(6, message.length - 6);
     
     switch (helpSubject) {
@@ -18,6 +18,14 @@ let parseHelpCommand = (message) => {
         case "?":
             return { success: true, reply: [
                 "HELP Subjects I can currently tell you about: [nugget, ingot, market, gifting, raid, dungeon, sailing, building, inventory, pets]",
+            ], };
+
+        case "training":
+        case "train all":
+            return { success: true, reply: [
+                "Your character has a number of skills they can level. Most skills level by training. You can enter '!train all' to train your top three skills all at once.",
+                "For other skills, you'll want to !train those specific skill names. For example '!train crafting' will train crafting.",
+                "One caveat: Slayer and Health are two skills you can not train through this command. Health levels with overall level, and Slayer levels by fighting in raids and dungeons.",
             ], };
 
         case "nugget":
