@@ -34,6 +34,7 @@ class TwitchController {
         // Connect and save off our personal username
         let connectResult = await chat.connect();
         if (!connectResult) { return false; }
+        if (!twitchChat._userState) { return false; }
         myUsername = twitchChat._userState.username;
 
         TwitchController.AddMessageCallback("MSG_RATELIMIT", () => {

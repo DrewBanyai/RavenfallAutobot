@@ -59,6 +59,9 @@ class SiteMainArea {
                 dungeonTimer:       (messageLower.includes(" until dungeon starts.")),
                 youNeedToCraft:     (messageLower.includes(", you need") && messageLower.includes(" to craft ")),
                 alreadyJoined:      (messageLower.includes("join failed. reason: you're already playing!")),
+                alreadyInRaid:      (messageLower.includes(", you have already joined the raid")),
+                alreadyInDungeon:   (messageLower.includes("you have already joined the dungeon.")),
+                cannotStartRaid:    (messageLower === "raid cannot be started right now."),
                 playerGotItem:      (messageLower.includes("you found a ")),
                 ravenbotStats:      (messageLower.includes(", combat level ") && messageLower.includes(", attack ") && messageLower.includes(", farming ") && messageLower.includes(", -- total ")),
                 islandCheck:        (messageLower.includes("you're on the island called")),
@@ -68,6 +71,11 @@ class SiteMainArea {
                 singleStatReport:   (messageLower.includes(", ") && messageLower.includes(" (") && messageLower.includes("%)")),
                 resourcesReport:    (messageLower.includes(", wood ") && messageLower.includes(", ore ") && messageLower.includes(", fish ") && messageLower.includes(", wheat ") && messageLower.includes(", coin ")),
                 activePetChange:    (messageLower.includes(", you have changed your active pet to ")),
+                specifyCrafting:    (messageLower.includes("you must specify an item or category to craft. Currently supported item categories")),
+                youCraftedA:        (messageLower.includes(", you crafted a ")),
+                cannotBeToggled:    (messageLower.includes("cannot be toggled.")),
+                beAtCraftingTable:  (messageLower.includes(", you can't currently craft weapons or armor. you have to be at the crafting table")),
+                islandLevelGlitch:  (messageLower.includes(", you need to be at least combat level 75 to train this skill on this island.")),
 
                 playerJoining:      (messageLower === "!join"),
                 playerLeaving:      (messageLower === "!leave"),
@@ -149,6 +157,9 @@ class SiteMainArea {
                     if (messageFlags.dungeonUnjoined) { return true; }
                     if (messageFlags.youNeedToCraft) { return true; }
                     if (messageFlags.alreadyJoined) { return true; }
+                    if (messageFlags.alreadyInRaid) { return true; }
+                    if (messageFlags.alreadyInDungeon) { return true; }
+                    if (messageFlags.cannotStartRaid) { return true; }
                     if (messageFlags.playerGotItem) { return true; }
                     if (messageFlags.ravenbotStats) { return true; }
                     if (messageFlags.islandCheck) { return true; }
@@ -159,6 +170,11 @@ class SiteMainArea {
                     if (messageFlags.singleStatReport) { return true; }
                     if (messageFlags.resourcesReport) { return true; }
                     if (messageFlags.activePetChange) { return true; }
+                    if (messageFlags.specifyCrafting) { return true; }
+                    if (messageFlags.youCraftedA) { return true; }
+                    if (messageFlags.cannotBeToggled) { return true; }
+                    if (messageFlags.beAtCraftingTable) { return true; }
+                    if (messageFlags.islandLevelGlitch) { return true; }
                 }
                 else if (!messageFlags.sentFromStreamer) {
                     if (messageFlags.playerJoining) { return true; }
