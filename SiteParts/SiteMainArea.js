@@ -131,20 +131,20 @@ class SiteMainArea {
             }
             else if (messageFlags.sentFromStreamer) {
                 //  Auto-join when told to
-                if ((messageLower === "autobots, roll out") || messageLower.includes("autobots, roll out")) {
+                if (messageLower.includes("autobots, roll out")) {
                     TwitchController.SendChatMessage(channel, "!join");
                     setTimeout(() => { TwitchController.SendChatMessage(channel, "!train all"); }, 400);
                     return true;
                 }
 
                 //  Join raid when told to
-                if ((messageLower === "autobots, raid time") || messageLower.includes("autobots, raid time")) {
+                if (messageLower.includes("autobots, raid time")) {
                     TwitchController.SendChatMessage(channel, "!raid");
                     return true;
                 }
 
                 //  Join dungeon when told to
-                if ((messageLower === "autobots, dungeon time") || messageLower.includes("autobots, dungeon time")) {
+                if (messageLower.includes("autobots, dungeon time")) {
                     TwitchController.SendChatMessage(channel, "!dungeon");
                     return true;
                 }
