@@ -6,8 +6,15 @@ class TwitchChatScreen {
     }
 
     generateContent() {
-        let container = new Container({ id: "TwitchChatContainerOuter", style: { width: "912px", minHeight: "460px", display: "none", background: "rgb(120, 120, 120)", padding: "4px 4px 4px 4px", }, });
+        let container = new Container({ id: "TwitchChatContainerOuter", style: { width: "912px", minHeight: "460px", display: "none", background: "rgb(120, 120, 120)", padding: "4px 4px 4px 4px", position: "relative", }, });
         
+        let clearChatFontawesome = new Fontawesome({ id: "ClearChatFontAwesome", style: { color: "rgb(200, 200, 200)", opacity: "0.5", fontSize: "16px", cursor: "pointer", position: "absolute", top: "10px", left: "890px", }, });
+        clearChatFontawesome.content.onmouseover = () => { clearChatFontawesome.content.style.opacity = 1.0; };
+        clearChatFontawesome.content.onmouseout = () => { clearChatFontawesome.content.style.opacity = 0.5; };
+        clearChatFontawesome.content.onclick = () => { this.clearChatLines(); };
+        clearChatFontawesome.setSymbol("fas fa-trash-alt");
+        container.appendChild(clearChatFontawesome.content);
+
         this.elements.chatBox = new Container({ id: "TwitchChatContainerInner", style: { minHeight: "360px", background: "rgb(120, 120, 120)", padding: "4px 4px 4px 4px", }, });
         container.appendChild(this.elements.chatBox.content);
 
@@ -19,6 +26,10 @@ class TwitchChatScreen {
         if (this.elements.chatBox.content.children.length >= 30) { this.elements.chatBox.content.removeChild(this.elements.chatBox.content.children[0]); }
 
         this.elements.chatBox.content.appendChild(this.createChatLine(chatUser, chatMessage, highlighted).content);
+    }
+
+    clearChatLines() {
+        while (this.elements.chatBox.content.children.length > 0) { this.elements.chatBox.content.removeChild(this.elements.chatBox.content.children[0]); }
     }
 
     createChatLine(chatUser, chatMessage, highlighted) {

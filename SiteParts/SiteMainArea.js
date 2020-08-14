@@ -55,7 +55,9 @@ class SiteMainArea {
                 disembarkedFerry:   (messageLower.includes(", you have disembarked the ferry.")),
                 raidTryOnFerry:     (messageLower.includes("you cannot join the raid while on the ferry.")),
                 youHaveToJoin:      (messageLower.includes("you have to !join the game before using this command.")),
+                trainingUnjoined:   (messageLower.includes("you're not in game. use !join to start playing")),
                 dungeonUnjoined:    (messageLower.includes(", you are not currently playing. use !join to start playing!")),
+                noActiveDungeons:   (messageLower.includes(", no active dungeons available, sorry.")),
                 dungeonTimer:       (messageLower.includes(" until dungeon starts.")),
                 youNeedToCraft:     (messageLower.includes(", you need") && messageLower.includes(" to craft ")),
                 alreadyJoined:      (messageLower.includes("join failed. reason: you're already playing!")),
@@ -75,15 +77,20 @@ class SiteMainArea {
                 youCraftedA:        (messageLower.includes(", you crafted a ")),
                 cannotBeToggled:    (messageLower.includes("cannot be toggled.")),
                 beAtCraftingTable:  (messageLower.includes(", you can't currently craft weapons or armor. you have to be at the crafting table")),
+                selectWhatToCraft:  (messageLower.includes("you must specify an item or category to craft. currently supported item categories")),
+                noItemInMarket:     (messageLower.includes(", could not find any") && messageLower.includes(" in the marketplace.")),
                 islandLevelGlitch:  (messageLower.includes(", you need to be at least combat level 75 to train this skill on this island.")),
+                itemOnMarket:       (messageLower.includes("was put in the marketplace listing for")),
+                currentTraining:    (messageLower.includes(", you're currently training")),
+                notTraining:        (messageLower.includes(", you're not training anything. use")),
 
                 playerJoining:      (messageLower === "!join"),
                 playerLeaving:      (messageLower === "!leave"),
-                playerTraining:     (messageLower.includes("!train ")),
                 playerCrafting:     (messageLower.includes("!craft ")),
                 playerRaid:         (messageLower === "!raid"),
                 playerDungeon:      (messageLower === "!dungeon"),
-                playerStats:        (messageLower === "!stats"),
+                playerStats:        (messageLower.substr(0, 6) === "!stats"),
+                playerTraining:     (messageLower.substr(0, 6) === "!train"),
                 playerResource:     (messageLower === "!res"),
                 playerToggle:       (messageLower.includes("!toggle")),
                 playerUseMarket:    (messageLower.includes("!buy") || messageLower.includes("!sell") || messageLower.includes("!vendor")),
@@ -91,6 +98,7 @@ class SiteMainArea {
                 playerRaidTrigger:  (messageLower === "!raidstart"),
 
                 isNowLiveMessage:   (messageLower.includes("is now live! streaming ")),
+                noItemFoundSE:      (messageLower.includes(", item not found, you can see all items here")),
 
                 nbSpamWarning:      (messageLower.includes("[blacklisted spam] [warning]")),
             };
@@ -112,9 +120,7 @@ class SiteMainArea {
                 }
 
                 //  Auto re-join if we aren't connected (also try to re-fire our last message before)
-                let raidUnjoined = (messageLower === (myUsername.toLowerCase() + ", you have to !join the game before using this command."));
-                let dungeonUnjoined = (messageLower === (myUsername.toLowerCase() + ", you are not currently playing, use the !join to start playing."));
-                if (messageFlags.relevantToMe && (raidUnjoined || dungeonUnjoined)) {
+                if (messageFlags.relevantToMe && (messageFlags.youHaveToJoin || messageFlags.dungeonUnjoined)) {
                     let lastCommand = {};
                     Object.assign(lastCommand, lastChatMessage);
                     TwitchController.SendChatMessage(channel, "!join");
@@ -154,7 +160,9 @@ class SiteMainArea {
                     if (messageFlags.disembarkedFerry) { return true; }
                     if (messageFlags.raidTryOnFerry) { return true; }
                     if (messageFlags.youHaveToJoin) { return true; }
+                    if (messageFlags.trainingUnjoined) { return true; }
                     if (messageFlags.dungeonUnjoined) { return true; }
+                    if (messageFlags.noActiveDungeons) { return true; }
                     if (messageFlags.youNeedToCraft) { return true; }
                     if (messageFlags.alreadyJoined) { return true; }
                     if (messageFlags.alreadyInRaid) { return true; }
@@ -174,21 +182,27 @@ class SiteMainArea {
                     if (messageFlags.youCraftedA) { return true; }
                     if (messageFlags.cannotBeToggled) { return true; }
                     if (messageFlags.beAtCraftingTable) { return true; }
+                    if (messageFlags.selectWhatToCraft) { return true; }
+                    if (messageFlags.noItemInMarket) { return true; }
                     if (messageFlags.islandLevelGlitch) { return true; }
+                    if (messageFlags.itemOnMarket) { return true; }
+                    if (messageFlags.currentTraining) { return true; }
+                    if (messageFlags.notTraining) { return true; }
                 }
                 else if (!messageFlags.sentFromStreamer) {
                     if (messageFlags.playerJoining) { return true; }
                     if (messageFlags.playerLeaving) { return true; }
-                    if (messageFlags.playerTraining) { return true; }
                     if (messageFlags.playerCrafting) { return true; }
                     if (messageFlags.playerRaid) { return true; }
                     if (messageFlags.playerDungeon) { return true; }
                     if (messageFlags.playerStats) { return true; }
                     if (messageFlags.playerResource) { return true; }
+                    if (messageFlags.playerTraining) { return true; }
                     if (messageFlags.playerToggle) { return true; }
                     if (messageFlags.playerUseMarket) { return true; }
 
                     if (messageFlags.isNowLiveMessage && messageFlags.streamElements) { return true; }
+                    if (messageFlags.noItemFoundSE && messageFlags.streamElements) { return true; }
                     if (messageFlags.nbSpamWarning && messageFlags.nightbot) { return true; }
                 }
             }
