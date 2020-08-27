@@ -92,6 +92,7 @@ class TwitchController {
             case "SUBSCRIPTION_GIFT_COMMUNITY":     if (SHOW_SUPPORT_MESSAGES) console.log("SUBSCRIPTION_GIFT_COMMUNITY: " + message.username + "(" + message.parameters.massGiftCount + "/" + message.parameters.senderCount + ")");       break;
             case "REWARDGIFT":                      if (SHOW_SUPPORT_MESSAGES) console.log("CHEER REWARD: " + message.username + "(" + message.parameters.totalRewardCount + ")");      break;
             case "SUBSCRIPTION_GIFT":               if (SHOW_SUPPORT_MESSAGES) console.log("GIFTED SUBSCRIPTION: " + message.username + " => " + message.parameters.recipientDisplayName + " (" + message.parameters.giftMonths + ")");     break;
+            case "RAID":                            if (SHOW_SUPPORT_MESSAGES) console.log("RAID: " + message.username + " (" + message.parameters.viewerCount);        break;
 
             case "DISCONNECTED":                    if (SHOW_PROBLEM_MESSAGES) console.log("DISCONNECTED");                                                             break;
             case "ERROR_ENCOUNTERED":               if (SHOW_PROBLEM_MESSAGES) console.log("ERROR ENCOUNTERED");                                                        break;
