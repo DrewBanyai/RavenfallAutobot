@@ -95,6 +95,7 @@ class SiteMainArea {
                 playerUseMarket:    (messageLower.includes("!buy") || messageLower.includes("!sell") || messageLower.includes("!vendor")),
                 playerSeekingHelp:  (messageLower.substr(0, 5) === "!help"),
                 playerRaidTrigger:  (messageLower === "!raidstart"),
+                playerCheckIsland:  (messageLower === "!island"),
 
                 isNowLiveMessage:   (messageLower.includes("is now live! streaming ")),
                 noItemFoundSE:      (messageLower.includes(", item not found, you can see all items here")),
@@ -199,6 +200,7 @@ class SiteMainArea {
                     if (messageFlags.playerTraining) { return true; }
                     if (messageFlags.playerToggle) { return true; }
                     if (messageFlags.playerUseMarket) { return true; }
+                    if (messageFlags.playerCheckIsland) { return true; }
 
                     if (messageFlags.isNowLiveMessage && messageFlags.streamElements) { return true; }
                     if (messageFlags.noItemFoundSE && messageFlags.streamElements) { return true; }

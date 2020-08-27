@@ -75,9 +75,9 @@ class TwitchController {
             case "JOIN":                            if (SHOW_LOW_LEVEL_MESSAGES) console.log("JOIN EVENT: " + message.username);                                        break;
             case "PART":                            if (SHOW_LOW_LEVEL_MESSAGES) console.log("PART EVENT: " + message.username);                                        break;
             case "PRIVMSG":                         if (SHOW_LOW_LEVEL_MESSAGES) console.log("CHAT MESSAGE - " + message.username + ": " + message.message);            break;
-            case "GLOBALUSERSTATE":                 if (SHOW_LOW_LEVEL_MESSAGES) console.log(message.event + " event occurred");                                        break;
-            case "USERSTATE":                       if (SHOW_LOW_LEVEL_MESSAGES) console.log(message.event + " event occurred");                                        break;
-            case "ROOMSTATE":                       if (SHOW_LOW_LEVEL_MESSAGES) console.log(message.event + " event occurred");                                        break;
+            case "GLOBALUSERSTATE":                 if (SHOW_LOW_LEVEL_MESSAGES) console.log("GLOBALUSERSTATE" + " event occurred");                                    break;
+            case "USERSTATE":                       if (SHOW_LOW_LEVEL_MESSAGES) console.log("USERSTATE" + " event occurred");                                          break;
+            case "ROOMSTATE":                       if (SHOW_LOW_LEVEL_MESSAGES) console.log("ROOMSTATE" + " event occurred");                                          break;
             case "HOSTTARGET":                      if (SHOW_LOW_LEVEL_MESSAGES) console.log("Host Target: " + message.username);                                       break;
             case "HOST_ON":                         if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST ON: " + message.message + " on " + message.username);                break;
             case "HOST_OFF":                        if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST OFF: " + message.message + " on " + message.username);               break;
@@ -93,6 +93,7 @@ class TwitchController {
             case "REWARDGIFT":                      if (SHOW_SUPPORT_MESSAGES) console.log("CHEER REWARD: " + message.username + "(" + message.parameters.totalRewardCount + ")");      break;
             case "SUBSCRIPTION_GIFT":               if (SHOW_SUPPORT_MESSAGES) console.log("GIFTED SUBSCRIPTION: " + message.username + " => " + message.parameters.recipientDisplayName + " (" + message.parameters.giftMonths + ")");     break;
             case "RAID":                            if (SHOW_SUPPORT_MESSAGES) console.log("RAID: " + message.username + " (" + message.parameters.viewerCount);        break;
+            case "RESUBSCRIPTION":                  if (SHOW_SUPPORT_MESSAGES) console.log("RESUBSCRIPTION: " + message.username + "(" + message.parameters.cumulativeMonths + " total)");  break;
 
             case "DISCONNECTED":                    if (SHOW_PROBLEM_MESSAGES) console.log("DISCONNECTED");                                                             break;
             case "ERROR_ENCOUNTERED":               if (SHOW_PROBLEM_MESSAGES) console.log("ERROR ENCOUNTERED");                                                        break;
