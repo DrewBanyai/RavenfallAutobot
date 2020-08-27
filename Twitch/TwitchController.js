@@ -6,9 +6,9 @@ let twitchAPI = null;
 let lastChatMessage = { c: null, m: null };
 
 const SHOW_LOW_LEVEL_MESSAGES = false;
-const SHOW_WHISPERS = false;
-const SHOW_SUPPORT_MESSAGES = false;
-const SHOW_PROBLEM_MESSAGES = false;
+const SHOW_WHISPERS = true;
+const SHOW_SUPPORT_MESSAGES = true;
+const SHOW_PROBLEM_MESSAGES = true;
 const SHOW_UNHANDLED_MESSAGES = true;
 
 
@@ -71,24 +71,32 @@ class TwitchController {
             case "372":
             case "376":
             case "353":
-            case "366":                         if (SHOW_LOW_LEVEL_MESSAGES) console.log(message.event + " EVENT: " + message.message);                             break;
-            case "JOIN":                        if (SHOW_LOW_LEVEL_MESSAGES) console.log("JOIN EVENT: " + message.username);                                        break;
-            case "PART":                        if (SHOW_LOW_LEVEL_MESSAGES) console.log("PART EVENT: " + message.username);                                        break;
-            case "PRIVMSG":                     if (SHOW_LOW_LEVEL_MESSAGES) console.log("CHAT MESSAGE - " + message.username + ": " + message.message);            break;
-            case "GLOBALUSERSTATE":     
-            case "USERSTATE":
-            case "ROOMSTATE":                   if (SHOW_LOW_LEVEL_MESSAGES) console.log(message.event + " event occurred");                                        break;
-            case "HOSTTARGET":                  if (SHOW_LOW_LEVEL_MESSAGES) console.log("Host Target: " + message.username);                                       break;
-            case "HOST_ON":                     if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST ON: " + message.message + " on " + message.username);                break;
-            case "HOST_OFF":                    if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST OFF: " + message.message + " on " + message.username);               break;
-            case "HOSTED/WITHOUT_VIEWERS":      if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST (NO VIEWERS): " + message.username);                                 break;
-            case "HOST_TARGET_WENT_OFFLINE":    if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST TARGET OFFLINE: " + message.message + " on " + message.username);    break;
-            case "USER_BANNED":                 if (SHOW_LOW_LEVEL_MESSAGES) console.log("USER BANNED: " + message.username);                                       break;
-            case "WHISPER":                     if (SHOW_WHISPERS) console.log("WHISPER from " + message.username + ": " + message.message);                        break;
-            case "CHEER":                       if (SHOW_SUPPORT_MESSAGES) console.log("CHEER: " + message.tag.bits.toString() + " bits from " + message.username); break;
-            case "DISCONNECTED":                if (SHOW_PROBLEM_MESSAGES) console.log("DISCONNECTED");                                                             break;
-            case "ERROR_ENCOUNTERED":           if (SHOW_PROBLEM_MESSAGES) console.log("ERROR ENCOUNTERED");                                                        break;
-            default:                            if (SHOW_UNHANDLED_MESSAGES) console.log("UNHANDLED:", message);                                                    break;
+            case "366":                             if (SHOW_LOW_LEVEL_MESSAGES) console.log(message.event + " EVENT: " + message.message);                             break;
+            case "JOIN":                            if (SHOW_LOW_LEVEL_MESSAGES) console.log("JOIN EVENT: " + message.username);                                        break;
+            case "PART":                            if (SHOW_LOW_LEVEL_MESSAGES) console.log("PART EVENT: " + message.username);                                        break;
+            case "PRIVMSG":                         if (SHOW_LOW_LEVEL_MESSAGES) console.log("CHAT MESSAGE - " + message.username + ": " + message.message);            break;
+            case "GLOBALUSERSTATE":                 if (SHOW_LOW_LEVEL_MESSAGES) console.log(message.event + " event occurred");                                        break;
+            case "USERSTATE":                       if (SHOW_LOW_LEVEL_MESSAGES) console.log(message.event + " event occurred");                                        break;
+            case "ROOMSTATE":                       if (SHOW_LOW_LEVEL_MESSAGES) console.log(message.event + " event occurred");                                        break;
+            case "HOSTTARGET":                      if (SHOW_LOW_LEVEL_MESSAGES) console.log("Host Target: " + message.username);                                       break;
+            case "HOST_ON":                         if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST ON: " + message.message + " on " + message.username);                break;
+            case "HOST_OFF":                        if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST OFF: " + message.message + " on " + message.username);               break;
+            case "HOSTED/WITHOUT_VIEWERS":          if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST (NO VIEWERS): " + message.username);                                 break;
+            case "HOST_TARGET_WENT_OFFLINE":        if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST TARGET OFFLINE: " + message.message + " on " + message.username);    break;
+            case "USER_BANNED":                     if (SHOW_LOW_LEVEL_MESSAGES) console.log("USER BANNED: " + message.username);                                       break;
+            case "MSG_DUPLICATE":                   if (SHOW_LOW_LEVEL_MESSAGES) console.log("MESSAGE DUPLICATE");                                                      break;
+
+            case "WHISPER":                         if (SHOW_WHISPERS) console.log("WHISPER from " + message.username + ": " + message.message);                        break;
+
+            case "CHEER":                           if (SHOW_SUPPORT_MESSAGES) console.log("CHEER: " + message.tags.bits.toString() + " bits from " + message.username); break;
+            case "SUBSCRIPTION_GIFT_COMMUNITY":     if (SHOW_SUPPORT_MESSAGES) console.log("SUBSCRIPTION_GIFT_COMMUNITY: " + message.username + "(" + message.parameters.massGiftCount + "/" + message.parameters.senderCount + ")");       break;
+            case "REWARDGIFT":                      if (SHOW_SUPPORT_MESSAGES) console.log("CHEER REWARD: " + message.username + "(" + message.parameters.totalRewardCount + ")");      break;
+            case "SUBSCRIPTION_GIFT":               if (SHOW_SUPPORT_MESSAGES) console.log("GIFTED SUBSCRIPTION: " + message.username + " => " + message.parameters.recipientDisplayName + " (" + message.parameters.giftMonths + ")");     break;
+
+            case "DISCONNECTED":                    if (SHOW_PROBLEM_MESSAGES) console.log("DISCONNECTED");                                                             break;
+            case "ERROR_ENCOUNTERED":               if (SHOW_PROBLEM_MESSAGES) console.log("ERROR ENCOUNTERED");                                                        break;
+
+            default:                                if (SHOW_UNHANDLED_MESSAGES) console.log("UNHANDLED:", message);                                                    break;
         }
     };
 

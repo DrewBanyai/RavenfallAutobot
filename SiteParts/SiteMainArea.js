@@ -46,7 +46,6 @@ class SiteMainArea {
                 sentFromStreamer:   (message.username === channel.toLowerCase()),
                 streamElements:     (message.username === "streamelements"),
                 nightbot:           (message.username === "nightbot"),
-
                 raidStarted:        (messageLower.includes("help fight him by typing !raid")),
                 dungeonStarted:     (messageLower.includes("type !dungeon to join.")),
                 vendorSale:         (messageLower.includes("you sold ") &&  messageLower.includes("to the vendor for")),
@@ -55,8 +54,8 @@ class SiteMainArea {
                 disembarkedFerry:   (messageLower.includes(", you have disembarked the ferry.")),
                 raidTryOnFerry:     (messageLower.includes("you cannot join the raid while on the ferry.")),
                 youHaveToJoin:      (messageLower.includes("you have to !join the game before using this command.")),
+                dungeonUnjoined:    (messageLower.includes("you are not currently playing") && messageLower.includes("!join to start playing.")),
                 trainingUnjoined:   (messageLower.includes("you're not in game. use !join to start playing")),
-                dungeonUnjoined:    (messageLower.includes(", you are not currently playing. use !join to start playing!")),
                 noActiveDungeons:   (messageLower.includes(", no active dungeons available, sorry.")),
                 dungeonTimer:       (messageLower.includes(" until dungeon starts.")),
                 youNeedToCraft:     (messageLower.includes(", you need") && messageLower.includes(" to craft ")),
