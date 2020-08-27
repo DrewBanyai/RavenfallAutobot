@@ -110,7 +110,7 @@ class BotControlScreen {
     }
 
     update() {
-        let streamer = (myUsername === channel);
+        let streamer = (myUsername.toLowerCase() === channel.toLowerCase());
         this.elements.streamerOptions.content.style.display = (streamer ? "" : "none");
     }
 

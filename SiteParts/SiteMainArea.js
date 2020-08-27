@@ -73,7 +73,7 @@ class SiteMainArea {
                 resourcesReport:    (messageLower.includes(", wood ") && messageLower.includes(", ore ") && messageLower.includes(", fish ") && messageLower.includes(", wheat ") && messageLower.includes(", coin ")),
                 activePetChange:    (messageLower.includes(", you have changed your active pet to ")),
                 specifyCrafting:    (messageLower.includes("you must specify an item or category to craft. Currently supported item categories")),
-                youCraftedA:        (messageLower.includes(", you crafted a ")),
+                youCraftedA:        (messageLower.includes(", you crafted a")),
                 cannotBeToggled:    (messageLower.includes("cannot be toggled.")),
                 beAtCraftingTable:  (messageLower.includes(", you can't currently craft weapons or armor. you have to be at the crafting table")),
                 selectWhatToCraft:  (messageLower.includes("you must specify an item or category to craft. currently supported item categories")),

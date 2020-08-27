@@ -1,10 +1,13 @@
-// Provide your token, the bot username and channel. You can generate a token here: https://twitchapps.com/tmi/
+//  The TwitchJS library requires that these three variables be named "token", "username", and channel"
+//  You can generate a token here: https://twitchapps.com/tmi/
 let token = "";
 let username = "";
 let channel = "";
+
+//  This value will be grabbed by TwitchJS once it connects using the token, and does not need to be set here.
 let myUsername = "";
 
-let getTwitchOptionsInURL = () => {
+let getOptionsInURL = () => {
     let queryString = window.location.search;
     if (!queryString || (queryString.length <= 1) || (queryString[0] !== "?")) { return {}; }
     queryString = queryString.substr(1, queryString.length - 1);
@@ -20,8 +23,9 @@ let getTwitchOptionsInURL = () => {
     return queryLibrary;
 }
 
-const twitchURLOptions = getTwitchOptionsInURL();
+let URL_OPTIONS = getOptionsInURL();
 
-if (twitchURLOptions && twitchURLOptions.token) { token = "oauth:" + twitchURLOptions.token; }
-if (twitchURLOptions && twitchURLOptions.username) { username = twitchURLOptions.username; }
-if (twitchURLOptions && twitchURLOptions.channel) { channel = twitchURLOptions.channel; }
+//  If new URL arguments are put in the URL, this will grab those and override the ones set in code (if any)
+if (URL_OPTIONS && URL_OPTIONS.token) { token = "oauth:" + URL_OPTIONS.token; }
+if (URL_OPTIONS && URL_OPTIONS.username) { username = URL_OPTIONS.username; }
+if (URL_OPTIONS && URL_OPTIONS.channel) { channel = URL_OPTIONS.channel; }
