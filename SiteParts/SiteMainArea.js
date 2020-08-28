@@ -3,7 +3,7 @@ class SiteMainArea {
         this.options = options;
         this.autoRaidTriggerMinutes = 10;
         this.lastRaidOccurred = 0;
-        this.autoOptions = { autoRaid: true, autoDungeon: true, helpBot: false, autoRaidTrigger: false, allowRaidTrigger: false, };
+        this.autoOptions = { autoRaid: true, autoDungeon: true, concealBot: false, helpBot: false, autoRaidTrigger: false, allowRaidTrigger: false, };
         this.elements = { botControlScreen: null, twitchChatContainer: null, };
         this.content = this.generateContent();
     }
@@ -82,6 +82,8 @@ class SiteMainArea {
                 itemOnMarket:       (messageLower.includes("was put in the marketplace listing for")),
                 currentTraining:    (messageLower.includes(", you're currently training")),
                 notTraining:        (messageLower.includes(", you're not training anything. use")),
+                cantCraftYet:       (messageLower.includes("you can't craft this item") && messageLower.includes("requires level")),
+                youGifted:          (messageLower.includes("you gifted ") && messageLower.includes(" to ")),
 
                 playerJoining:      (messageLower === "!join"),
                 playerLeaving:      (messageLower === "!leave"),
@@ -103,19 +105,28 @@ class SiteMainArea {
                 nbSpamWarning:      (messageLower.includes("[blacklisted spam] [warning]")),
             };
 
+            //  Remove all false flags
+            let flagKeys = Object.keys(messageFlags);
+            flagKeys.forEach((flagType) => {
+                if (["relevantToMe", "sentFromStreamer"].includes(flagType)) { return; }
+                if (!messageFlags[flagType]) { delete messageFlags[flagType]; }
+            });
+
             if (messageFlags.sentFromRavenbot) {
                 //  Auto-reply on raids
                 if (messageFlags.raidStarted) {
                     this.lastRaidOccurred = (new Date()).getTime();
                     if (this.autoOptions.autoRaid) {
-                        TwitchController.SendChatMessage(channel, "!raid");
+                        let replyDelay = this.autoOptions.concealBot ? (4000 + (Math.random() * 6000)) : 1;
+                        setTimeout(() => { TwitchController.SendChatMessage(channel, "!raid"); }, replyDelay);
                         return true;
                     }
                 }
 
                 //  Auto-reply on dungeons
                 if (this.autoOptions.autoDungeon && messageFlags.dungeonStarted) {
-                    TwitchController.SendChatMessage(channel, "!dungeon");
+                    let replyDelay = this.autoOptions.concealBot ? (4000 + (Math.random() * 6000)) : 1;
+                    setTimeout(() => { TwitchController.SendChatMessage(channel, "!dungeon"); }, replyDelay);
                     return true;
                 }
 
@@ -188,6 +199,8 @@ class SiteMainArea {
                     if (messageFlags.itemOnMarket) { return true; }
                     if (messageFlags.currentTraining) { return true; }
                     if (messageFlags.notTraining) { return true; }
+                    if (messageFlags.cantCraftYet) { return true; }
+                    if (messageFlags.youGifted) { return true; }
                 }
                 else if (!messageFlags.sentFromStreamer) {
                     if (messageFlags.playerJoining) { return true; }

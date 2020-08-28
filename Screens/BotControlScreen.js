@@ -1,9 +1,9 @@
 class BotControlScreen {
     constructor(options) {
         this.options = options;
-        this.checkboxOptions = { autoRaid: true, autoDungeon: true, helpBot: false, autoRaidTrigger: false, allowRaidTrigger: false };
+        this.checkboxOptions = { autoRaid: true, autoDungeon: true, concealBot: false,  helpBot: false, autoRaidTrigger: false, allowRaidTrigger: false };
         this.changeOptionsCallback = null;
-        this.elements = { autoRaidCheckbox: null, autoDungeonCheckbox: null, helpBotCheckbox: null, autoRaidTriggerCheckbox: null, allowRaidTriggerCheckbox: null, streamerOptions: null, };
+        this.elements = { autoRaidCheckbox: null, autoDungeonCheckbox: null, helpBotCheckbox: null, autoRaidTriggerCheckbox: null, allowRaidTriggerCheckbox: null, concealBotCheckbox: null, streamerOptions: null, };
         this.optionTitleWidth = "300px";
         this.content = this.generateContent();
     }
@@ -32,6 +32,17 @@ class BotControlScreen {
         this.elements.autoDungeonCheckbox = new Checkbox({ id: "AutoDungeonCheckbox", style: { margin: "0px 0px 0px 30px", }, checked: true });
         this.elements.autoDungeonCheckbox.setClickCallback(() => { this.changeOptions(); });
         autoDungeonCheckboxContainer.appendChild(this.elements.autoDungeonCheckbox.content);
+
+        //  Create the conceal bot (delay auto-raid and auto-dungeon by random amount of seconds)
+        let concealBotCheckboxContainer = new Container({ id: "ConcealBotCheckboxContainer", style: { display: "flex", margin: "0px 0px 2px 0px", }, });
+        container.appendChild(concealBotCheckboxContainer.content);
+
+        let concealBotTitleLabel = new Label({ id: "ConcealBotTitleLabel", attributes: { value: "Conceal bot use by delaying automatic replies", }, style: { width: this.optionTitleWidth, }, });
+        concealBotCheckboxContainer.appendChild(concealBotTitleLabel.content);
+
+        this.elements.concealBotCheckbox = new Checkbox({ id: "ConcealBotCheckbox", style: { margin: "0px 0px 0px 30px", }, checked: false });
+        this.elements.concealBotCheckbox.setClickCallback(() => { this.changeOptions(); });
+        concealBotCheckboxContainer.appendChild(this.elements.concealBotCheckbox.content);
 
         //  If we're the streamer (channel owner), create a section for streamer-related options
         this.elements.streamerOptions = new Container({ id: "StreamerOptions", style: { display: "none", }, })
@@ -88,6 +99,11 @@ class BotControlScreen {
 
         if (this.elements.autoDungeonCheckbox && (this.elements.autoDungeonCheckbox.getChecked() !== this.checkboxOptions.autoDungeon)) {
             this.checkboxOptions.autoDungeon = this.elements.autoDungeonCheckbox.getChecked();
+            optionsChanged = true;
+        }
+
+        if (this.elements.concealBotCheckbox && (this.elements.concealBotCheckbox.getChecked() !== this.checkboxOptions.concealBot)) {
+            this.checkboxOptions.concealBot = this.elements.concealBotCheckbox.getChecked();
             optionsChanged = true;
         }
 
