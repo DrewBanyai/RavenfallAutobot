@@ -92,10 +92,13 @@ class TwitchController {
             case "REWARDGIFT":                      if (SHOW_SUPPORT_MESSAGES) console.log("CHEER REWARD: " + message.username + "(" + message.parameters.totalRewardCount + ")");      break;
             case "SUBSCRIPTION_GIFT":               if (SHOW_SUPPORT_MESSAGES) console.log("GIFTED SUBSCRIPTION: " + message.username + " => " + message.parameters.recipientDisplayName + " (" + message.parameters.giftMonths + ")");     break;
             case "RAID":                            if (SHOW_SUPPORT_MESSAGES) console.log("RAID: " + message.username + " (" + message.parameters.viewerCount);        break;
-            case "RESUBSCRIPTION":                  if (SHOW_SUPPORT_MESSAGES) console.log("RESUBSCRIPTION: " + message.username + "(" + message.parameters.cumulativeMonths + " total)");  break;
+            case "SUBSCRIPTION":                    if (SHOW_SUPPORT_MESSAGES) console.log("SUBSCRIPTION: " + message.username + " (" + cumulativeMonths + " months)"); break;
+            case "RESUBSCRIPTION":                  if (SHOW_SUPPORT_MESSAGES) console.log("RESUBSCRIPTION: " + message.username + " (" + message.parameters.cumulativeMonths + " total)");  break;
+            case "BITSBADGETIER":                   if (SHOW_SUPPORT_MESSAGES) console.log("BITS BADGE TIER: " + message.username + " (" + message.);                                          break;
 
             case "DISCONNECTED":                    if (SHOW_PROBLEM_MESSAGES) console.log("DISCONNECTED");                                                             break;
             case "ERROR_ENCOUNTERED":               if (SHOW_PROBLEM_MESSAGES) console.log("ERROR ENCOUNTERED");                                                        break;
+            case "CLEARMSG":                        if (SHOW_PROBLEM_MESSAGES) console.log("CLEARMSG: " + message.username);                                            break;
 
             default:                                if (SHOW_UNHANDLED_MESSAGES) console.log("UNHANDLED:", message);                                                    break;
         }
