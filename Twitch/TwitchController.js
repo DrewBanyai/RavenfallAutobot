@@ -94,7 +94,7 @@ class TwitchController {
             case "RAID":                            if (SHOW_SUPPORT_MESSAGES) console.log("RAID: " + message.username + " (" + message.parameters.viewerCount);        break;
             case "SUBSCRIPTION":                    if (SHOW_SUPPORT_MESSAGES) console.log("SUBSCRIPTION: " + message.username + " (" + cumulativeMonths + " months)"); break;
             case "RESUBSCRIPTION":                  if (SHOW_SUPPORT_MESSAGES) console.log("RESUBSCRIPTION: " + message.username + " (" + message.parameters.cumulativeMonths + " total)");  break;
-            case "BITSBADGETIER":                   if (SHOW_SUPPORT_MESSAGES) console.log("BITS BADGE TIER: " + message.username + " (" + message.);                                          break;
+            case "BITSBADGETIER":                   if (SHOW_SUPPORT_MESSAGES) console.log("BITS BADGE TIER: " + message.username); console.log(message);               break;
 
             case "DISCONNECTED":                    if (SHOW_PROBLEM_MESSAGES) console.log("DISCONNECTED");                                                             break;
             case "ERROR_ENCOUNTERED":               if (SHOW_PROBLEM_MESSAGES) console.log("ERROR ENCOUNTERED");                                                        break;
