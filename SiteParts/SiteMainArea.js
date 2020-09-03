@@ -3,7 +3,7 @@ class SiteMainArea {
         this.options = options;
         this.autoRaidTriggerMinutes = 10;
         this.lastRaidOccurred = 0;
-        this.autoOptions = { autoRaid: true, autoDungeon: true, concealBot: false, helpBot: false, autoRaidTrigger: false, allowRaidTrigger: false, };
+        this.autoOptions = { autoRaid: true, autoDungeon: true, concealBot: false, autoTrain: false, autoTrainSkill: "all", helpBot: false, autoRaidTrigger: false, allowRaidTrigger: false };
         this.elements = { botControlScreen: null, twitchChatContainer: null, };
         this.content = this.generateContent();
     }
@@ -135,8 +135,10 @@ class SiteMainArea {
                     let lastCommand = {};
                     Object.assign(lastCommand, lastChatMessage);
                     TwitchController.SendChatMessage(channel, "!join");
-                    setTimeout(() => { TwitchController.SendChatMessage(channel, "!train all"); }, 400);
-                    setTimeout(() => { if (lastCommand.m) { TwitchController.SendChatMessage(lastCommand.c, lastCommand.m); } }, 800);
+                    
+                    if (this.autoOptions.autoTrain) { setTimeout(() => { TwitchController.SendChatMessage(channel, "!train " + this.autoOptions.autoTrainSkill); }, 1500); }
+                    
+                    setTimeout(() => { if (lastCommand.m) { TwitchController.SendChatMessage(lastCommand.c, lastCommand.m); } }, 3000);
                     return true;
                 }
             }

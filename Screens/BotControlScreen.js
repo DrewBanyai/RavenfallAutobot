@@ -1,9 +1,9 @@
 class BotControlScreen {
     constructor(options) {
         this.options = options;
-        this.checkboxOptions = { autoRaid: true, autoDungeon: true, concealBot: false,  helpBot: false, autoRaidTrigger: false, allowRaidTrigger: false };
+        this.checkboxOptions = { autoRaid: true, autoDungeon: true, concealBot: false, autoTrain: false, autoTrainSkill: "all", helpBot: false, autoRaidTrigger: false, allowRaidTrigger: false };
         this.changeOptionsCallback = null;
-        this.elements = { autoRaidCheckbox: null, autoDungeonCheckbox: null, helpBotCheckbox: null, autoRaidTriggerCheckbox: null, allowRaidTriggerCheckbox: null, concealBotCheckbox: null, streamerOptions: null, };
+        this.elements = { autoRaidCheckbox: null, autoDungeonCheckbox: null, helpBotCheckbox: null, autoRaidTriggerCheckbox: null, allowRaidTriggerCheckbox: null, concealBotCheckbox: null, autoTrainDropdown: null, streamerOptions: null, };
         this.optionTitleWidth = "300px";
         this.content = this.generateContent();
     }
@@ -11,38 +11,35 @@ class BotControlScreen {
     generateContent() {
         let container = new Container({ id: "BotControlScreen", style: { width: "920px", height: "100%", backgroundColor: "rgb(64, 64 ,64)", padding: "6px", color: "rgb(200, 200, 200)" }, });
 
-        //  Create the auto raid options checkbox
-        let autoRaidCheckboxContainer = new Container({ id: "AutoRaidCheckboxContainer", style: { display: "flex", margin: "0px 0px 2px 0px", }, });
-        container.appendChild(autoRaidCheckboxContainer.content);
+        let addFeatureCheckbox = (name, description, checkboxID, checked) => {
+            let checkboxContainer = new Container({ id: name + "CheckboxContainer", style: { display: "flex", margin: "0px 0px 2px 0px", }, });
+            container.appendChild(checkboxContainer.content);
 
-        let autoRaidTitleLabel = new Label({ id: "AutoRaidTitleLabel", attributes: { value: "Auto-Join all raids", }, style: { width: this.optionTitleWidth, }, });
-        autoRaidCheckboxContainer.appendChild(autoRaidTitleLabel.content);
+            let checkboxTitleLabel = new Label({ id: name + "TitleLabel", attributes: { value: description, }, style: { width: this.optionTitleWidth, }, });
+            checkboxContainer.appendChild(checkboxTitleLabel.content);
 
-        this.elements.autoRaidCheckbox = new Checkbox({ id: "AutoRaidCheckbox", style: { margin: "0px 0px 0px 30px", }, checked: true });
-        this.elements.autoRaidCheckbox.setClickCallback(() => { this.changeOptions(); });
-        autoRaidCheckboxContainer.appendChild(this.elements.autoRaidCheckbox.content);
+            this.elements[checkboxID] = new Checkbox({ id: name + "Checkbox", style: { margin: "0px 0px 0px 30px", }, checked: checked });
+            this.elements[checkboxID].setClickCallback(() => { this.changeOptions(); });
+            checkboxContainer.appendChild(this.elements[checkboxID].content);
 
-        //  Create the auto dungeon options checkbox
-        let autoDungeonCheckboxContainer = new Container({ id: "AutoDungeonCheckboxContainer", style: { display: "flex", margin: "0px 0px 2px 0px", }, });
-        container.appendChild(autoDungeonCheckboxContainer.content);
+            return checkboxContainer;
+        }
 
-        let autoDungeonTitleLabel = new Label({ id: "AutoDungeonTitleLabel", attributes: { value: "Auto-Join all dungeons", }, style: { width: this.optionTitleWidth, }, });
-        autoDungeonCheckboxContainer.appendChild(autoDungeonTitleLabel.content);
+        //  Add the checkbox entries for auto-raid, auto-dungeon, and concealing the bot
+        addFeatureCheckbox("AutoRaid", "Auto-Join all raids", "autoRaidCheckbox", true);
+        addFeatureCheckbox("AutoDungeon", "Auto-Join all dungeons", "autoDungeonCheckbox", true);
+        addFeatureCheckbox("ConcealBot", "Conceal bot use by delaying automatic replies", "concealBotCheckbox", false);
 
-        this.elements.autoDungeonCheckbox = new Checkbox({ id: "AutoDungeonCheckbox", style: { margin: "0px 0px 0px 30px", }, checked: true });
-        this.elements.autoDungeonCheckbox.setClickCallback(() => { this.changeOptions(); });
-        autoDungeonCheckboxContainer.appendChild(this.elements.autoDungeonCheckbox.content);
-
-        //  Create the conceal bot (delay auto-raid and auto-dungeon by random amount of seconds)
-        let concealBotCheckboxContainer = new Container({ id: "ConcealBotCheckboxContainer", style: { display: "flex", margin: "0px 0px 2px 0px", }, });
-        container.appendChild(concealBotCheckboxContainer.content);
-
-        let concealBotTitleLabel = new Label({ id: "ConcealBotTitleLabel", attributes: { value: "Conceal bot use by delaying automatic replies", }, style: { width: this.optionTitleWidth, }, });
-        concealBotCheckboxContainer.appendChild(concealBotTitleLabel.content);
-
-        this.elements.concealBotCheckbox = new Checkbox({ id: "ConcealBotCheckbox", style: { margin: "0px 0px 0px 30px", }, checked: false });
-        this.elements.concealBotCheckbox.setClickCallback(() => { this.changeOptions(); });
-        concealBotCheckboxContainer.appendChild(this.elements.concealBotCheckbox.content);
+        //  Add the checkbox entry for auto training and add a training type dropdown to the entry for specifying a skill
+        let autoTrainContainer = addFeatureCheckbox("AutoTrain", "Auto-Train when automatically joined", "autoTrainCheckbox", false);
+        this.elements.autoTrainDropdown = new DropDown({ id: "AutoTrainDropdown", style: { margin: "0px 0px 0px 8px", }, });
+        let trainingTypes = [ "all", "attack", "defense", "strength", "magic", "ranged", "woodcutting", "fishing", "mining", "crafting", "cooking", "farming" ];
+        this.elements.autoTrainDropdown.setValues(trainingTypes);
+        this.elements.autoTrainDropdown.setOnChangeCallback(() => {
+            this.checkboxOptions.autoTrainSkill = this.elements.autoTrainDropdown.getValue();
+            if (this.changeOptionsCallback) { this.changeOptionsCallback(this.checkboxOptions); }
+        });
+        autoTrainContainer.appendChild(this.elements.autoTrainDropdown.content);
 
         //  If we're the streamer (channel owner), create a section for streamer-related options
         this.elements.streamerOptions = new Container({ id: "StreamerOptions", style: { display: "none", }, })
@@ -107,6 +104,11 @@ class BotControlScreen {
             optionsChanged = true;
         }
 
+        if (this.elements.autoTrainCheckbox && (this.elements.autoTrainCheckbox.getChecked() !== this.checkboxOptions.autoTrain)) {
+            this.checkboxOptions.autoTrain = this.elements.autoTrainCheckbox.getChecked();
+            optionsChanged = true;
+        }
+
         if (this.elements.helpBotCheckbox && (this.elements.helpBotCheckbox.getChecked() !== this.checkboxOptions.helpBot)) {
             this.checkboxOptions.helpBot = this.elements.helpBotCheckbox.getChecked();
             optionsChanged = true;
@@ -122,7 +124,7 @@ class BotControlScreen {
             optionsChanged = true;
         }
 
-        if (optionsChanged) { this.changeOptionsCallback(this.checkboxOptions); }
+        if (optionsChanged && this.changeOptionsCallback) { this.changeOptionsCallback(this.checkboxOptions); }
     }
 
     update() {

@@ -24,8 +24,4 @@ class Image {
 	
 	getValue() { return this.content.src; }
     setValue(value) { this.content.src = value; }
-    
-	setFont(font) { this.content.style.fontFamily = font; }
-	setFontSize(size) { this.content.style.fontSize = size; }
-	setColor(color) { this.content.style.color = color; }
 }
