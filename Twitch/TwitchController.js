@@ -6,7 +6,7 @@ let twitchAPI = null;
 let lastChatMessage = { c: null, m: null };
 
 const SHOW_LOW_LEVEL_MESSAGES = false;
-const SHOW_WHISPERS = true;
+const SHOW_WHISPER_MESSAGES = true;
 const SHOW_SUPPORT_MESSAGES = true;
 const SHOW_PROBLEM_MESSAGES = true;
 const SHOW_UNHANDLED_MESSAGES = true;
@@ -14,7 +14,16 @@ const SHOW_UNHANDLED_MESSAGES = true;
 class TwitchController {
     constructor() {}
 
+    static AddTwitchMessageCallback(eventID, callback) { twitchMessageCallbacks[eventID] = callback; }
+
+    static async SendChatMessage(sendChannel, sendMessage, resend = false) {
+        if (!sendChannel || !sendMessage) { return; }
+        if (!resend) { lastChatMessage = { c: sendChannel, m: sendMessage }; }
+        twitchChat.say(sendChannel, sendMessage);
+    }
+
     static async Connect(twitchChannel, twitchBotUsername, twitchToken) {
+        //  Store off the given channel, username, and token
         channel = twitchChannel.toLowerCase();
         username = twitchBotUsername;
         token = twitchToken;
@@ -24,38 +33,32 @@ class TwitchController {
         twitchChat = chat;
         twitchAPI = api;
 
-        twitchChat.onAction = (channel, user, message, msg) => { console.log("Action", channel, user, message, msg); }
-        twitchChat.onAuthenticationFailure = (message) => { console.log("Authentication Failure", message); }
+        //  Set event handlers on the Twitch Chat object
+        twitchChat.onAction = (channel, user, message, msg) => { this.onAction(channel, user, message, msg); }
+        twitchChat.onAuthenticationFailure = (message) => { this.onAuthenticationFailure(message); }
 
-        // Listen for all events.
-        chat.on(TwitchJs.Chat.Events.ALL, this.handleTwitchMessage);
+        //  Turn the twitch chat on
+        twitchChat.on(TwitchJs.Chat.Events.ALL, this.handleTwitchMessage);
         
-        // Connect and save off our personal username
-        let connectResult = await chat.connect();
-        if (!connectResult) { return false; }
-        if (!twitchChat._userState) { return false; }
+        //  Connect and save off our personal username
+        let connectResult = await twitchChat.connect();
+        if (!connectResult) { console.warn("Failed to connect to twitch channel!"); return false; }
+        if (!twitchChat._userState) { console.warn("Invalid user state returned when connecting to channel!"); return false; }
         myUsername = twitchChat._userState.username;
 
-        TwitchController.AddMessageCallback("MSG_RATELIMIT", () => {
-            //  try to resend the same message again
-            setTimeout(() => { TwitchController.SendChatMessage(lastChatMessage.c, lastChatMessage.m); }, 500);
+        TwitchController.AddTwitchMessageCallback("MSG_RATELIMIT", () => {
+            //  If we hit the message rate limit, try to resend the same message again in 500ms
+            setTimeout(() => { TwitchController.SendChatMessage(lastChatMessage.c, lastChatMessage.m, true); }, 500);
             return true;
         });
 
-        chat.join(channel);
-        //TwitchController.SendChatMessage(channel, "System is connected and ready to begin!");
+        //  Join the chat channel
+        twitchChat.join(channel);
         return true;
     }
-
-    static async SendChatMessage(sendChannel, sendMessage) {
-        if (!sendChannel || !sendMessage) { return; }
-        lastChatMessage = { c: sendChannel, m: sendMessage };
-        twitchChat.say(sendChannel, sendMessage);
-    }
-
-    static AddMessageCallback(eventID, callback) { twitchMessageCallbacks[eventID] = callback; }
     
     static handleTwitchMessage(message) {
+        //  If you've added a twitch callback, it'll override the bottom code and instead go to your callback
         if (twitchMessageCallbacks.hasOwnProperty(message.event)) { if (twitchMessageCallbacks[message.event](message)) return; }
 
         switch (message.event) {
@@ -85,16 +88,17 @@ class TwitchController {
             case "USER_BANNED":                     if (SHOW_LOW_LEVEL_MESSAGES) console.log("USER BANNED: " + message.username);                                       break;
             case "MSG_DUPLICATE":                   if (SHOW_LOW_LEVEL_MESSAGES) console.log("MESSAGE DUPLICATE");                                                      break;
 
-            case "WHISPER":                         if (SHOW_WHISPERS) console.log("WHISPER from " + message.username + ": " + message.message);                        break;
+            case "WHISPER":                         if (SHOW_WHISPER_MESSAGES) console.log("WHISPER from " + message.username + ": " + message.message);                break;
 
             case "CHEER":                           if (SHOW_SUPPORT_MESSAGES) console.log("CHEER: " + message.tags.bits.toString() + " bits from " + message.username); break;
             case "SUBSCRIPTION_GIFT_COMMUNITY":     if (SHOW_SUPPORT_MESSAGES) console.log("SUBSCRIPTION_GIFT_COMMUNITY: " + message.username + "(" + message.parameters.massGiftCount + "/" + message.parameters.senderCount + ")");       break;
             case "REWARDGIFT":                      if (SHOW_SUPPORT_MESSAGES) console.log("CHEER REWARD: " + message.username + "(" + message.parameters.totalRewardCount + ")");      break;
             case "SUBSCRIPTION_GIFT":               if (SHOW_SUPPORT_MESSAGES) console.log("GIFTED SUBSCRIPTION: " + message.username + " => " + message.parameters.recipientDisplayName + " (" + message.parameters.giftMonths + ")");     break;
             case "RAID":                            if (SHOW_SUPPORT_MESSAGES) console.log("RAID: " + message.username + " (" + message.parameters.viewerCount);        break;
-            case "SUBSCRIPTION":                    if (SHOW_SUPPORT_MESSAGES) console.log("SUBSCRIPTION: " + message.username + " (" + cumulativeMonths + " months)"); break;
+            case "SUBSCRIPTION":                    if (SHOW_SUPPORT_MESSAGES) console.log("SUBSCRIPTION: " + message.username + " (" + message.parameters.cumulativeMonths + " months)"); break;
             case "RESUBSCRIPTION":                  if (SHOW_SUPPORT_MESSAGES) console.log("RESUBSCRIPTION: " + message.username + " (" + message.parameters.cumulativeMonths + " total)");  break;
             case "BITSBADGETIER":                   if (SHOW_SUPPORT_MESSAGES) console.log("BITS BADGE TIER: " + message.username); console.log(message);               break;
+            case "COMMUNITYPAYFORWARD":             if (SHOW_SUPPORT_MESSAGES) console.log("COMMUNITY PAY FORWARD: " + message.username);                               break;
 
             case "DISCONNECTED":                    if (SHOW_PROBLEM_MESSAGES) console.log("DISCONNECTED");                                                             break;
             case "ERROR_ENCOUNTERED":               if (SHOW_PROBLEM_MESSAGES) console.log("ERROR ENCOUNTERED");                                                        break;
@@ -104,7 +108,11 @@ class TwitchController {
         }
     };
 
+    static onAction(channel, user, message, msg) {
+        console.log("Twitch action: ", channel, user, message, msg);
+    }
+
     static onAuthenticationFailure(message) {
-        console.log("Authentication Failure", message);
+        console.warn("Twitch authentication failure: ", message);
     }
 }

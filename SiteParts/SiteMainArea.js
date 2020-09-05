@@ -36,7 +36,7 @@ class SiteMainArea {
     }
 
     setTwitchChatCallbacks() {
-        TwitchController.AddMessageCallback("PRIVMSG", (message) => {
+        TwitchController.AddTwitchMessageCallback("PRIVMSG", (message) => {
             let messageLower = message.message.toLowerCase();
             let iAmStreamer = (myUsername.toLowerCase() === channel.toLowerCase());
 
