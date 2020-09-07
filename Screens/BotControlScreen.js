@@ -38,6 +38,11 @@ class BotControlScreen {
         this.elements.autoTrainDropdown.setOnChangeCallback(() => {
             this.checkboxOptions.autoTrainSkill = this.elements.autoTrainDropdown.getValue();
             if (this.changeOptionsCallback) { this.changeOptionsCallback(this.checkboxOptions); }
+            
+            if (this.checkboxOptions.autoTrain) {
+                setTimeout(() => { TwitchController.SendChatMessage(channel, "!join"); }, 1500);
+                setTimeout(() => { TwitchController.SendChatMessage(channel, "!train " + this.checkboxOptions.autoTrainSkill); }, 4000);
+            }
         });
         autoTrainContainer.appendChild(this.elements.autoTrainDropdown.content);
 
