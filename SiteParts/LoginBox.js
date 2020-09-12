@@ -46,7 +46,7 @@ class LoginBox {
         let twitchChannelName = this.createInputPairing("TwitchChannelName", "Channel Name:", channel)
         element.appendChild(twitchChannelName.content);
         
-        let twitchUserName = this.createInputPairing("TwitchBotUserName", "Bot User Name:", username);
+        let twitchUserName = this.createInputPairing("TwitchBotUserName", "RavenBot User Name:", username);
         element.appendChild(twitchUserName.content);
 
         let twitchOAuthToken = this.createInputPairing("TwitchOAuthPassword", "OAuth Password:", token);
