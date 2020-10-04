@@ -84,11 +84,13 @@ class SiteMainArea {
                 notTraining:        (messageLower.includes(", you're not training anything. use")),
                 cantCraftYet:       (messageLower.includes("you can't craft this item") && messageLower.includes("requires level")),
                 youGifted:          (messageLower.includes("you gifted ") && messageLower.includes(" to ")),
+                currentMultiplier:  (messageLower.includes("the current exp multiplier")),
 
                 playerJoining:      (messageLower === "!join"),
                 playerLeaving:      (messageLower === "!leave"),
                 playerCrafting:     (messageLower.includes("!craft ")),
                 playerRaid:         (messageLower === "!raid"),
+                raidPlayer:         (messageLower.includes("!raid ")),
                 playerDungeon:      (messageLower === "!dungeon"),
                 playerStats:        (messageLower.substr(0, 6) === "!stats"),
                 playerTraining:     (messageLower.substr(0, 6) === "!train"),
@@ -203,12 +205,14 @@ class SiteMainArea {
                     if (messageFlags.notTraining) { return true; }
                     if (messageFlags.cantCraftYet) { return true; }
                     if (messageFlags.youGifted) { return true; }
+                    if (messageFlags.currentMultiplier) { return true; }
                 }
                 else if (!messageFlags.sentFromStreamer) {
                     if (messageFlags.playerJoining) { return true; }
                     if (messageFlags.playerLeaving) { return true; }
                     if (messageFlags.playerCrafting) { return true; }
                     if (messageFlags.playerRaid) { return true; }
+                    if (messageFlags.raidPlayer) { return true; }
                     if (messageFlags.playerDungeon) { return true; }
                     if (messageFlags.playerStats) { return true; }
                     if (messageFlags.playerResource) { return true; }
